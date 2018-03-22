@@ -1,0 +1,18 @@
+[package]
+name = "no-std-net"
+description = "Rust's std::net... without the 'std'."
+version = "0.1.0"
+authors = [ "M@ Dunlap <mattdunlap@gmail.com>" ]
+categories = [ "embedded", "network-programming", "no-std" ]
+repository = "https://github.com/dunmatt/no-std-net"
+license = "MIT"
+
+[badges]
+maintenance = { status = "actively-developed" }
+travis-ci = { repository = "dunmatt/no-std-net" }
+
+[dependencies]
+
+[dependencies.byteorder]
+default-features = false
+version = "^1"
