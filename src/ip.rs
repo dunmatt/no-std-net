@@ -51,15 +51,15 @@ pub enum IpAddr {
 ///
 /// # Textual representation
 ///
-/// `Ipv4Addr` provides a [`FromStrFIXME`] implementation. The four octets are in decimal
+/// `Ipv4Addr` provides a [`FromStr`] implementation. The four octets are in decimal
 /// notation, divided by `.` (this is called "dot-decimal notation").
 ///
-/// [`FromStrFIXME`]: ../../std/str/trait.FromStr.html
+/// [`FromStr`]: https://doc.rust-lang.org/core/str/trait.FromStr.html
 ///
 /// # Examples
 ///
 /// ```
-/// use no-std-net::Ipv4Addr;
+/// use no_std_net::Ipv4Addr;
 ///
 /// let localhost = Ipv4Addr::new(127, 0, 0, 1);
 /// assert_eq!("127.0.0.1".parse(), Ok(localhost));
@@ -84,18 +84,18 @@ pub struct Ipv4Addr {
 ///
 /// # Textual representation
 ///
-/// `Ipv6Addr` provides a [`FromStrFIXME`] implementation. There are many ways to represent
+/// `Ipv6Addr` provides a [`FromStr`] implementation. There are many ways to represent
 /// an IPv6 address in text, but in general, each segments is written in hexadecimal
 /// notation, and segments are separated by `:`. For more information, see
 /// [IETF RFC 5952].
 ///
-/// [`FromStrFIXME`]: ../../std/str/trait.FromStr.html
+/// [`FromStr`]: https://doc.rust-lang.org/core/str/trait.FromStr.html
 /// [IETF RFC 5952]: https://tools.ietf.org/html/rfc5952
 ///
 /// # Examples
 ///
 /// ```
-/// use no-std-net::Ipv6Addr;
+/// use no_std_net::Ipv6Addr;
 ///
 /// let localhost = Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1);
 /// assert_eq!("::1".parse(), Ok(localhost));
@@ -126,14 +126,14 @@ impl IpAddr {
     /// See the documentation for [`Ipv4Addr::is_unspecified`][IPv4] and
     /// [`Ipv6Addr::is_unspecified`][IPv6] for more details.
     ///
-    /// [IPv4]: ../../std/net/struct.Ipv4Addr.html#method.is_unspecified
-    /// [IPv6]: ../../std/net/struct.Ipv6Addr.html#method.is_unspecified
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [IPv4]: ../../no-std-net/struct.Ipv4Addr.html#method.is_unspecified
+    /// [IPv6]: ../../no-std-net/struct.Ipv6Addr.html#method.is_unspecified
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
+    /// use no_std_net::{IpAddr, Ipv4Addr, Ipv6Addr};
     ///
     /// assert_eq!(IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0)).is_unspecified(), true);
     /// assert_eq!(IpAddr::V6(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 0)).is_unspecified(), true);
@@ -150,14 +150,14 @@ impl IpAddr {
     /// See the documentation for [`Ipv4Addr::is_loopback`][IPv4] and
     /// [`Ipv6Addr::is_loopback`][IPv6] for more details.
     ///
-    /// [IPv4]: ../../std/net/struct.Ipv4Addr.html#method.is_loopback
-    /// [IPv6]: ../../std/net/struct.Ipv6Addr.html#method.is_loopback
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [IPv4]: ../../no-std-net/struct.Ipv4Addr.html#method.is_loopback
+    /// [IPv6]: ../../no-std-net/struct.Ipv6Addr.html#method.is_loopback
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
+    /// use no_std_net::{IpAddr, Ipv4Addr, Ipv6Addr};
     ///
     /// assert_eq!(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)).is_loopback(), true);
     /// assert_eq!(IpAddr::V6(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 0x1)).is_loopback(), true);
@@ -174,16 +174,16 @@ impl IpAddr {
     /// See the documentation for [`Ipv4Addr::is_global`][IPv4] and
     /// [`Ipv6Addr::is_global`][IPv6] for more details.
     ///
-    /// [IPv4]: ../../std/net/struct.Ipv4Addr.html#method.is_global
-    /// [IPv6]: ../../std/net/struct.Ipv6Addr.html#method.is_global
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [IPv4]: ../../no-std-net/struct.Ipv4Addr.html#method.is_global
+    /// [IPv6]: ../../no-std-net/struct.Ipv6Addr.html#method.is_global
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
     /// #![feature(ip)]
     ///
-    /// use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
+    /// use no_std_net::{IpAddr, Ipv4Addr, Ipv6Addr};
     ///
     /// fn main() {
     ///     assert_eq!(IpAddr::V4(Ipv4Addr::new(80, 9, 12, 3)).is_global(), true);
@@ -203,14 +203,14 @@ impl IpAddr {
     /// See the documentation for [`Ipv4Addr::is_multicast`][IPv4] and
     /// [`Ipv6Addr::is_multicast`][IPv6] for more details.
     ///
-    /// [IPv4]: ../../std/net/struct.Ipv4Addr.html#method.is_multicast
-    /// [IPv6]: ../../std/net/struct.Ipv6Addr.html#method.is_multicast
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [IPv4]: ../../no-std-net/struct.Ipv4Addr.html#method.is_multicast
+    /// [IPv6]: ../../no-std-net/struct.Ipv6Addr.html#method.is_multicast
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
+    /// use no_std_net::{IpAddr, Ipv4Addr, Ipv6Addr};
     ///
     /// assert_eq!(IpAddr::V4(Ipv4Addr::new(224, 254, 0, 0)).is_multicast(), true);
     /// assert_eq!(IpAddr::V6(Ipv6Addr::new(0xff00, 0, 0, 0, 0, 0, 0, 0)).is_multicast(), true);
@@ -227,16 +227,16 @@ impl IpAddr {
     /// See the documentation for [`Ipv4Addr::is_documentation`][IPv4] and
     /// [`Ipv6Addr::is_documentation`][IPv6] for more details.
     ///
-    /// [IPv4]: ../../std/net/struct.Ipv4Addr.html#method.is_documentation
-    /// [IPv6]: ../../std/net/struct.Ipv6Addr.html#method.is_documentation
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [IPv4]: ../../no-std-net/struct.Ipv4Addr.html#method.is_documentation
+    /// [IPv6]: ../../no-std-net/struct.Ipv6Addr.html#method.is_documentation
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
     /// #![feature(ip)]
     ///
-    /// use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
+    /// use no_std_net::{IpAddr, Ipv4Addr, Ipv6Addr};
     ///
     /// fn main() {
     ///     assert_eq!(IpAddr::V4(Ipv4Addr::new(203, 0, 113, 6)).is_documentation(), true);
@@ -253,14 +253,14 @@ impl IpAddr {
 
     /// Returns [`true`] if this address is an [IPv4 address], and [`false`] otherwise.
     ///
-    /// [`true`]: ../../std/primitive.bool.html
-    /// [`false`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
+    /// [`false`]: https://doc.rust-lang.org/std/primitive.bool.html
     /// [IPv4 address]: #variant.V4
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
+    /// use no_std_net::{IpAddr, Ipv4Addr, Ipv6Addr};
     ///
     /// fn main() {
     ///     assert_eq!(IpAddr::V4(Ipv4Addr::new(203, 0, 113, 6)).is_ipv4(), true);
@@ -277,14 +277,14 @@ impl IpAddr {
 
     /// Returns [`true`] if this address is an [IPv6 address], and [`false`] otherwise.
     ///
-    /// [`true`]: ../../std/primitive.bool.html
-    /// [`false`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
+    /// [`false`]: https://doc.rust-lang.org/std/primitive.bool.html
     /// [IPv6 address]: #variant.V6
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
+    /// use no_std_net::{IpAddr, Ipv4Addr, Ipv6Addr};
     ///
     /// fn main() {
     ///     assert_eq!(IpAddr::V4(Ipv4Addr::new(203, 0, 113, 6)).is_ipv6(), false);
@@ -329,7 +329,7 @@ impl Ipv4Addr {
     /// # Examples
     ///
     /// ```
-    /// use std::net::Ipv4Addr;
+    /// use no_std_net::Ipv4Addr;
     ///
     /// let addr = Ipv4Addr::new(127, 0, 0, 1);
     /// ```
@@ -345,7 +345,7 @@ impl Ipv4Addr {
     ///
     /// ```
     /// #![feature(ip_constructors)]
-    /// use std::net::Ipv4Addr;
+    /// use no_std_net::Ipv4Addr;
     ///
     /// let addr = Ipv4Addr::localhost();
     /// assert_eq!(addr, Ipv4Addr::new(127, 0, 0, 1));
@@ -360,7 +360,7 @@ impl Ipv4Addr {
     ///
     /// ```
     /// #![feature(ip_constructors)]
-    /// use std::net::Ipv4Addr;
+    /// use no_std_net::Ipv4Addr;
     ///
     /// let addr = Ipv4Addr::unspecified();
     /// assert_eq!(addr, Ipv4Addr::new(0, 0, 0, 0));
@@ -374,7 +374,7 @@ impl Ipv4Addr {
     /// # Examples
     ///
     /// ```
-    /// use std::net::Ipv4Addr;
+    /// use no_std_net::Ipv4Addr;
     ///
     /// let addr = Ipv4Addr::new(127, 0, 0, 1);
     /// assert_eq!(addr.octets(), [127, 0, 0, 1]);
@@ -389,12 +389,12 @@ impl Ipv4Addr {
     /// W. Richard Stevens, p. 891; see also [ip7].
     ///
     /// [ip7]: http://man7.org/linux/man-pages/man7/ip.7.html
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::net::Ipv4Addr;
+    /// use no_std_net::Ipv4Addr;
     ///
     /// assert_eq!(Ipv4Addr::new(0, 0, 0, 0).is_unspecified(), true);
     /// assert_eq!(Ipv4Addr::new(45, 22, 13, 197).is_unspecified(), false);
@@ -408,12 +408,12 @@ impl Ipv4Addr {
     /// This property is defined by [IETF RFC 1122].
     ///
     /// [IETF RFC 1122]: https://tools.ietf.org/html/rfc1122
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::net::Ipv4Addr;
+    /// use no_std_net::Ipv4Addr;
     ///
     /// assert_eq!(Ipv4Addr::new(127, 0, 0, 1).is_loopback(), true);
     /// assert_eq!(Ipv4Addr::new(45, 22, 13, 197).is_loopback(), false);
@@ -431,12 +431,12 @@ impl Ipv4Addr {
     ///  - 192.168.0.0/16
     ///
     /// [IETF RFC 1918]: https://tools.ietf.org/html/rfc1918
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::net::Ipv4Addr;
+    /// use no_std_net::Ipv4Addr;
     ///
     /// assert_eq!(Ipv4Addr::new(10, 0, 0, 1).is_private(), true);
     /// assert_eq!(Ipv4Addr::new(10, 10, 10, 10).is_private(), true);
@@ -460,12 +460,12 @@ impl Ipv4Addr {
     /// This property is defined by [IETF RFC 3927].
     ///
     /// [IETF RFC 3927]: https://tools.ietf.org/html/rfc3927
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::net::Ipv4Addr;
+    /// use no_std_net::Ipv4Addr;
     ///
     /// assert_eq!(Ipv4Addr::new(169, 254, 0, 0).is_link_local(), true);
     /// assert_eq!(Ipv4Addr::new(169, 254, 10, 65).is_link_local(), true);
@@ -488,14 +488,14 @@ impl Ipv4Addr {
     /// - the unspecified address (0.0.0.0)
     ///
     /// [ipv4-sr]: https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
     /// #![feature(ip)]
     ///
-    /// use std::net::Ipv4Addr;
+    /// use no_std_net::Ipv4Addr;
     ///
     /// fn main() {
     ///     assert_eq!(Ipv4Addr::new(10, 254, 0, 0).is_global(), false);
@@ -516,12 +516,12 @@ impl Ipv4Addr {
     /// and is defined by [IETF RFC 5771].
     ///
     /// [IETF RFC 5771]: https://tools.ietf.org/html/rfc5771
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::net::Ipv4Addr;
+    /// use no_std_net::Ipv4Addr;
     ///
     /// assert_eq!(Ipv4Addr::new(224, 254, 0, 0).is_multicast(), true);
     /// assert_eq!(Ipv4Addr::new(236, 168, 10, 65).is_multicast(), true);
@@ -536,12 +536,12 @@ impl Ipv4Addr {
     /// A broadcast address has all octets set to 255 as defined in [IETF RFC 919].
     ///
     /// [IETF RFC 919]: https://tools.ietf.org/html/rfc919
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::net::Ipv4Addr;
+    /// use no_std_net::Ipv4Addr;
     ///
     /// assert_eq!(Ipv4Addr::new(255, 255, 255, 255).is_broadcast(), true);
     /// assert_eq!(Ipv4Addr::new(236, 168, 10, 65).is_broadcast(), false);
@@ -559,12 +559,12 @@ impl Ipv4Addr {
     /// - 203.0.113.0/24 (TEST-NET-3)
     ///
     /// [IETF RFC 5737]: https://tools.ietf.org/html/rfc5737
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::net::Ipv4Addr;
+    /// use no_std_net::Ipv4Addr;
     ///
     /// assert_eq!(Ipv4Addr::new(192, 0, 2, 255).is_documentation(), true);
     /// assert_eq!(Ipv4Addr::new(198, 51, 100, 65).is_documentation(), true);
@@ -584,12 +584,12 @@ impl Ipv4Addr {
     ///
     /// a.b.c.d becomes ::a.b.c.d
     ///
-    /// [IPv6 address]: ../../std/net/struct.Ipv6Addr.html
+    /// [IPv6 address]: ../../no-std-net/struct.Ipv6Addr.html
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::net::{Ipv4Addr, Ipv6Addr};
+    /// use no_std_net::{Ipv4Addr, Ipv6Addr};
     ///
     /// assert_eq!(Ipv4Addr::new(192, 0, 2, 255).to_ipv6_compatible(),
     ///            Ipv6Addr::new(0, 0, 0, 0, 0, 0, 49152, 767));
@@ -604,12 +604,12 @@ impl Ipv4Addr {
     ///
     /// a.b.c.d becomes ::ffff:a.b.c.d
     ///
-    /// [IPv6 address]: ../../std/net/struct.Ipv6Addr.html
+    /// [IPv6 address]: ../../no-std-net/struct.Ipv6Addr.html
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::net::{Ipv4Addr, Ipv6Addr};
+    /// use no_std_net::{Ipv4Addr, Ipv6Addr};
     ///
     /// assert_eq!(Ipv4Addr::new(192, 0, 2, 255).to_ipv6_mapped(),
     ///            Ipv6Addr::new(0, 0, 0, 0, 0, 65535, 49152, 767));
@@ -691,7 +691,7 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
-    /// use std::net::Ipv6Addr;
+    /// use no_std_net::Ipv6Addr;
     ///
     /// let addr = Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff);
     /// ```
@@ -714,7 +714,7 @@ impl Ipv6Addr {
     ///
     /// ```
     /// #![feature(ip_constructors)]
-    /// use std::net::Ipv6Addr;
+    /// use no_std_net::Ipv6Addr;
     ///
     /// let addr = Ipv6Addr::localhost();
     /// assert_eq!(addr, Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1));
@@ -729,7 +729,7 @@ impl Ipv6Addr {
     ///
     /// ```
     /// #![feature(ip_constructors)]
-    /// use std::net::Ipv6Addr;
+    /// use no_std_net::Ipv6Addr;
     ///
     /// let addr = Ipv6Addr::unspecified();
     /// assert_eq!(addr, Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 0));
@@ -743,7 +743,7 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
-    /// use no-std-net::Ipv6Addr;
+    /// use no_std_net::Ipv6Addr;
     ///
     /// assert_eq!(Ipv6Addr::new(0x0011, 0x2233, 0, 0, 0, 0, 0, 0).first_segment(), 0x11);
     /// ```
@@ -756,7 +756,7 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
-    /// use no-std-net::Ipv6Addr;
+    /// use no_std_net::Ipv6Addr;
     ///
     /// assert_eq!(Ipv6Addr::new(0x0011, 0x2233, 0, 0, 0, 0, 0, 0).second_segment(), 0x2233);
     /// ```
@@ -769,7 +769,7 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
-    /// use std::net::Ipv6Addr;
+    /// use no_std_net::Ipv6Addr;
     ///
     /// assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff).segments(),
     ///            [0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff]);
@@ -793,12 +793,12 @@ impl Ipv6Addr {
     /// This property is defined in [IETF RFC 4291].
     ///
     /// [IETF RFC 4291]: https://tools.ietf.org/html/rfc4291
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::net::Ipv6Addr;
+    /// use no_std_net::Ipv6Addr;
     ///
     /// assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff).is_unspecified(), false);
     /// assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 0).is_unspecified(), true);
@@ -812,12 +812,12 @@ impl Ipv6Addr {
     /// This property is defined in [IETF RFC 4291].
     ///
     /// [IETF RFC 4291]: https://tools.ietf.org/html/rfc4291
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::net::Ipv6Addr;
+    /// use no_std_net::Ipv6Addr;
     ///
     /// assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff).is_loopback(), false);
     /// assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 0x1).is_loopback(), true);
@@ -834,15 +834,15 @@ impl Ipv6Addr {
     /// - link-local, site-local, and unique local unicast addresses
     /// - interface-, link-, realm-, admin- and site-local multicast addresses
     ///
-    /// [`true`]: ../../std/primitive.bool.html
-    /// [`false`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
+    /// [`false`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
     /// #![feature(ip)]
     ///
-    /// use std::net::Ipv6Addr;
+    /// use no_std_net::Ipv6Addr;
     ///
     /// fn main() {
     ///     assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff).is_global(), true);
@@ -863,14 +863,14 @@ impl Ipv6Addr {
     /// This property is defined in [IETF RFC 4193].
     ///
     /// [IETF RFC 4193]: https://tools.ietf.org/html/rfc4193
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
     /// #![feature(ip)]
     ///
-    /// use std::net::Ipv6Addr;
+    /// use no_std_net::Ipv6Addr;
     ///
     /// fn main() {
     ///     assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff).is_unique_local(),
@@ -887,14 +887,14 @@ impl Ipv6Addr {
     /// This property is defined in [IETF RFC 4291].
     ///
     /// [IETF RFC 4291]: https://tools.ietf.org/html/rfc4291
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
     /// #![feature(ip)]
     ///
-    /// use std::net::Ipv6Addr;
+    /// use no_std_net::Ipv6Addr;
     ///
     /// fn main() {
     ///     assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff).is_unicast_link_local(),
@@ -909,14 +909,14 @@ impl Ipv6Addr {
     /// Returns [`true`] if this is a deprecated unicast site-local address
     /// (fec0::/10).
     ///
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
     /// #![feature(ip)]
     ///
-    /// use std::net::Ipv6Addr;
+    /// use no_std_net::Ipv6Addr;
     ///
     /// fn main() {
     ///     assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff).is_unicast_site_local(),
@@ -934,14 +934,14 @@ impl Ipv6Addr {
     /// This property is defined in [IETF RFC 3849].
     ///
     /// [IETF RFC 3849]: https://tools.ietf.org/html/rfc3849
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
     /// #![feature(ip)]
     ///
-    /// use std::net::Ipv6Addr;
+    /// use no_std_net::Ipv6Addr;
     ///
     /// fn main() {
     ///     assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff).is_documentation(),
@@ -964,14 +964,14 @@ impl Ipv6Addr {
     /// - the unspecified address
     /// - the address range reserved for documentation
     ///
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
     /// #![feature(ip)]
     ///
-    /// use std::net::Ipv6Addr;
+    /// use no_std_net::Ipv6Addr;
     ///
     /// fn main() {
     ///     assert_eq!(Ipv6Addr::new(0x2001, 0xdb8, 0, 0, 0, 0, 0, 0).is_unicast_global(), false);
@@ -992,7 +992,7 @@ impl Ipv6Addr {
     /// ```
     /// #![feature(ip)]
     ///
-    /// use std::net::{Ipv6Addr, Ipv6MulticastScope};
+    /// use no_std_net::{Ipv6Addr, Ipv6MulticastScope};
     ///
     /// fn main() {
     ///     assert_eq!(Ipv6Addr::new(0xff0e, 0, 0, 0, 0, 0, 0, 0).multicast_scope(),
@@ -1022,12 +1022,12 @@ impl Ipv6Addr {
     /// This property is defined by [IETF RFC 4291].
     ///
     /// [IETF RFC 4291]: https://tools.ietf.org/html/rfc4291
-    /// [`true`]: ../../std/primitive.bool.html
+    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::net::Ipv6Addr;
+    /// use no_std_net::Ipv6Addr;
     ///
     /// assert_eq!(Ipv6Addr::new(0xff00, 0, 0, 0, 0, 0, 0, 0).is_multicast(), true);
     /// assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff).is_multicast(), false);
@@ -1041,13 +1041,13 @@ impl Ipv6Addr {
     ///
     /// ::a.b.c.d and ::ffff:a.b.c.d become a.b.c.d
     ///
-    /// [IPv4 address]: ../../std/net/struct.Ipv4Addr.html
-    /// [`None`]: ../../std/option/enum.Option.html#variant.None
+    /// [IPv4 address]: ../../no-std-net/struct.Ipv4Addr.html
+    /// [`None`]: https://doc.rust-lang.org/core/option/enum.Option.html#variant.None
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::net::{Ipv4Addr, Ipv6Addr};
+    /// use no_std_net::{Ipv4Addr, Ipv6Addr};
     ///
     /// assert_eq!(Ipv6Addr::new(0xff00, 0, 0, 0, 0, 0, 0, 0).to_ipv4(), None);
     /// assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff).to_ipv4(),
@@ -1068,7 +1068,7 @@ impl Ipv6Addr {
     /// Returns the sixteen eight-bit integers the IPv6 address consists of.
     ///
     /// ```
-    /// use std::net::Ipv6Addr;
+    /// use no_std_net::Ipv6Addr;
     ///
     /// assert_eq!(Ipv6Addr::new(0xff00, 0, 0, 0, 0, 0, 0, 0).octets(),
     ///            [255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
