@@ -1,7 +1,7 @@
 [package]
 name = "no-std-net"
 description = "Rust's std::net... without the 'std'."
-version = "0.1.0"
+version = "0.2.0"
 authors = [ "M@ Dunlap <mattdunlap@gmail.com>" ]
 categories = [ "embedded", "network-programming", "no-std" ]
 repository = "https://github.com/dunmatt/no-std-net"
@@ -16,3 +16,7 @@ travis-ci = { repository = "dunmatt/no-std-net" }
 [dependencies.byteorder]
 default-features = false
 version = "^1"
+
+[features]
+default = [ "i128" ]
+i128 = [ "byteorder/i128" ]
