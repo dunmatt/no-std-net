@@ -1,7 +1,8 @@
 language: rust
+# TODO: put stable and beta back in once slice_pattern lands in stable
 rust:
-  - stable
-  - beta
+  # - stable
+  # - beta
   - nightly
 
 cache: cargo

@@ -50,5 +50,5 @@ mod addr;
 mod ip;
 mod parser;
 
-pub use addr::{ SocketAddr, SocketAddrV4, SocketAddrV6 };
+pub use addr::{ SocketAddr, SocketAddrV4, SocketAddrV6, ToSocketAddrs };
 pub use ip::{ IpAddr, Ipv4Addr, Ipv6Addr, Ipv6MulticastScope };
