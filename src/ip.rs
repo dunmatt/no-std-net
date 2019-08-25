@@ -181,8 +181,6 @@ impl IpAddr {
     /// # Examples
     ///
     /// ```
-    /// #![feature(ip)]
-    ///
     /// use no_std_net::{IpAddr, Ipv4Addr, Ipv6Addr};
     ///
     /// fn main() {
@@ -234,8 +232,6 @@ impl IpAddr {
     /// # Examples
     ///
     /// ```
-    /// #![feature(ip)]
-    ///
     /// use no_std_net::{IpAddr, Ipv4Addr, Ipv6Addr};
     ///
     /// fn main() {
@@ -344,7 +340,6 @@ impl Ipv4Addr {
     /// # Examples
     ///
     /// ```
-    /// #![feature(ip_constructors)]
     /// use no_std_net::Ipv4Addr;
     ///
     /// let addr = Ipv4Addr::localhost();
@@ -359,7 +354,6 @@ impl Ipv4Addr {
     /// # Examples
     ///
     /// ```
-    /// #![feature(ip_constructors)]
     /// use no_std_net::Ipv4Addr;
     ///
     /// let addr = Ipv4Addr::unspecified();
@@ -493,8 +487,6 @@ impl Ipv4Addr {
     /// # Examples
     ///
     /// ```
-    /// #![feature(ip)]
-    ///
     /// use no_std_net::Ipv4Addr;
     ///
     /// fn main() {
@@ -713,7 +705,6 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
-    /// #![feature(ip_constructors)]
     /// use no_std_net::Ipv6Addr;
     ///
     /// let addr = Ipv6Addr::localhost();
@@ -728,7 +719,6 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
-    /// #![feature(ip_constructors)]
     /// use no_std_net::Ipv6Addr;
     ///
     /// let addr = Ipv6Addr::unspecified();
@@ -840,8 +830,6 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
-    /// #![feature(ip)]
-    ///
     /// use no_std_net::Ipv6Addr;
     ///
     /// fn main() {
@@ -868,8 +856,6 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
-    /// #![feature(ip)]
-    ///
     /// use no_std_net::Ipv6Addr;
     ///
     /// fn main() {
@@ -892,8 +878,6 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
-    /// #![feature(ip)]
-    ///
     /// use no_std_net::Ipv6Addr;
     ///
     /// fn main() {
@@ -914,8 +898,6 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
-    /// #![feature(ip)]
-    ///
     /// use no_std_net::Ipv6Addr;
     ///
     /// fn main() {
@@ -939,8 +921,6 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
-    /// #![feature(ip)]
-    ///
     /// use no_std_net::Ipv6Addr;
     ///
     /// fn main() {
@@ -969,8 +949,6 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
-    /// #![feature(ip)]
-    ///
     /// use no_std_net::Ipv6Addr;
     ///
     /// fn main() {
@@ -990,8 +968,6 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
-    /// #![feature(ip)]
-    ///
     /// use no_std_net::{Ipv6Addr, Ipv6MulticastScope};
     ///
     /// fn main() {

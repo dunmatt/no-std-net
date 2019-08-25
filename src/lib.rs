@@ -37,10 +37,16 @@
 // TODO: figure out how to put links into rustdocs and update the above
 
 #![no_std]
-#![deny(warnings)]
-#![deny(missing_docs)]
-#![cfg_attr(feature = "i128", feature(i128_type))]
-#![feature(slice_patterns)]
+#![deny(
+	dead_code,
+	missing_docs,
+	unused_imports,
+	unused_must_use,
+	unused_parens,
+	unused_qualifications,
+	warnings,
+)]
+#![forbid(unsafe_code)]
 
 extern crate byteorder;
 
