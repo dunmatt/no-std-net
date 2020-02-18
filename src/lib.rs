@@ -56,5 +56,13 @@ mod addr;
 mod ip;
 mod parser;
 
+#[cfg(feature = "serde")]
+extern crate serde;
+#[cfg(feature = "serde")]
+mod de;
+#[cfg(feature = "serde")]
+mod ser;
+
+
 pub use addr::{ SocketAddr, SocketAddrV4, SocketAddrV6, ToSocketAddrs };
 pub use ip::{ IpAddr, Ipv4Addr, Ipv6Addr, Ipv6MulticastScope };

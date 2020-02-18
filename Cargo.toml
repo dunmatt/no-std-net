@@ -12,6 +12,10 @@ maintenance = { status = "actively-developed" }
 travis-ci = { repository = "dunmatt/no-std-net" }
 
 [dependencies]
+serde = { version = "1.0.104", default-features = false, optional = true }
+
+[dev-dependencies]
+serde_test = "1.0.104"
 
 [dependencies.byteorder]
 default-features = false
