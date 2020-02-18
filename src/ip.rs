@@ -4,7 +4,7 @@
 
 use core::cmp::Ordering;
 
-use byteorder::{ ByteOrder, NetworkEndian };
+use byteorder::{ByteOrder, NetworkEndian};
 
 // TODO: copy the parsers over from https://github.com/rust-lang/rust/blob/master/src/libstd/net/parser.rs
 // and update all the tests
@@ -116,9 +116,8 @@ pub enum Ipv6MulticastScope {
     AdminLocal,
     SiteLocal,
     OrganizationLocal,
-    Global
+    Global,
 }
-
 
 impl IpAddr {
     /// Returns [`true`] for the special 'unspecified' address.
@@ -305,13 +304,182 @@ impl ::fmt::Display for IpAddr {
     }
 }
 
+impl From<[u8; 4]> for Ipv4Addr {
+    /// Creates an `Ipv4Addr` from a four element byte array.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::Ipv4Addr;
+    ///
+    /// let addr = Ipv4Addr::from([13u8, 12u8, 11u8, 10u8]);
+    /// assert_eq!(Ipv4Addr::new(13, 12, 11, 10), addr);
+    /// ```
+    fn from(octets: [u8; 4]) -> Ipv4Addr {
+        Ipv4Addr::new(octets[0], octets[1], octets[2], octets[3])
+    }
+}
+
+impl From<[u8; 4]> for IpAddr {
+    /// Creates an `IpAddr::V4` from a four element byte array.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::{IpAddr, Ipv4Addr};
+    ///
+    /// let addr = IpAddr::from([13u8, 12u8, 11u8, 10u8]);
+    /// assert_eq!(IpAddr::V4(Ipv4Addr::new(13, 12, 11, 10)), addr);
+    /// ```
+    fn from(octets: [u8; 4]) -> IpAddr {
+        IpAddr::V4(Ipv4Addr::from(octets))
+    }
+}
+
+impl From<[u8; 16]> for Ipv6Addr {
+    /// Creates an `Ipv6Addr` from a sixteen element byte array.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::Ipv6Addr;
+    ///
+    /// let addr = Ipv6Addr::from([
+    ///     25u8, 24u8, 23u8, 22u8, 21u8, 20u8, 19u8, 18u8,
+    ///     17u8, 16u8, 15u8, 14u8, 13u8, 12u8, 11u8, 10u8,
+    /// ]);
+    /// assert_eq!(
+    ///     Ipv6Addr::new(
+    ///         0x1918, 0x1716,
+    ///         0x1514, 0x1312,
+    ///         0x1110, 0x0f0e,
+    ///         0x0d0c, 0x0b0a
+    ///     ),
+    ///     addr
+    /// );
+    /// ```
+    fn from(octets: [u8; 16]) -> Ipv6Addr {
+        Ipv6Addr { inner: octets }
+    }
+}
+
+impl From<[u16; 8]> for Ipv6Addr {
+    /// Creates an `Ipv6Addr` from an eight element 16-bit array.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::Ipv6Addr;
+    ///
+    /// let addr = Ipv6Addr::from([
+    ///     525u16, 524u16, 523u16, 522u16,
+    ///     521u16, 520u16, 519u16, 518u16,
+    /// ]);
+    /// assert_eq!(
+    ///     Ipv6Addr::new(
+    ///         0x20d, 0x20c,
+    ///         0x20b, 0x20a,
+    ///         0x209, 0x208,
+    ///         0x207, 0x206
+    ///     ),
+    ///     addr
+    /// );
+    /// ```
+    fn from(segments: [u16; 8]) -> Ipv6Addr {
+        let [a, b, c, d, e, f, g, h] = segments;
+        Ipv6Addr::new(a, b, c, d, e, f, g, h)
+    }
+}
+
+impl From<[u8; 16]> for IpAddr {
+    /// Creates an `IpAddr::V6` from a sixteen element byte array.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::{IpAddr, Ipv6Addr};
+    ///
+    /// let addr = IpAddr::from([
+    ///     25u8, 24u8, 23u8, 22u8, 21u8, 20u8, 19u8, 18u8,
+    ///     17u8, 16u8, 15u8, 14u8, 13u8, 12u8, 11u8, 10u8,
+    /// ]);
+    /// assert_eq!(
+    ///     IpAddr::V6(Ipv6Addr::new(
+    ///         0x1918, 0x1716,
+    ///         0x1514, 0x1312,
+    ///         0x1110, 0x0f0e,
+    ///         0x0d0c, 0x0b0a
+    ///     )),
+    ///     addr
+    /// );
+    /// ```
+    fn from(octets: [u8; 16]) -> IpAddr {
+        IpAddr::V6(Ipv6Addr::from(octets))
+    }
+}
+
+impl From<[u16; 8]> for IpAddr {
+    /// Creates an `IpAddr::V6` from an eight element 16-bit array.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::{IpAddr, Ipv6Addr};
+    ///
+    /// let addr = IpAddr::from([
+    ///     525u16, 524u16, 523u16, 522u16,
+    ///     521u16, 520u16, 519u16, 518u16,
+    /// ]);
+    /// assert_eq!(
+    ///     IpAddr::V6(Ipv6Addr::new(
+    ///         0x20d, 0x20c,
+    ///         0x20b, 0x20a,
+    ///         0x209, 0x208,
+    ///         0x207, 0x206
+    ///     )),
+    ///     addr
+    /// );
+    /// ```
+    fn from(segments: [u16; 8]) -> IpAddr {
+        IpAddr::V6(Ipv6Addr::from(segments))
+    }
+}
+
 impl From<Ipv4Addr> for IpAddr {
+    /// Copies this address to a new `IpAddr::V4`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::{IpAddr, Ipv4Addr};
+    ///
+    /// let addr = Ipv4Addr::new(127, 0, 0, 1);
+    ///
+    /// assert_eq!(
+    ///     IpAddr::V4(addr),
+    ///     IpAddr::from(addr)
+    /// )
+    /// ```
     fn from(ipv4: Ipv4Addr) -> IpAddr {
         IpAddr::V4(ipv4)
     }
 }
 
 impl From<Ipv6Addr> for IpAddr {
+    /// Copies this address to a new `IpAddr::V6`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::{IpAddr, Ipv6Addr};
+    ///
+    /// let addr = Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff);
+    ///
+    /// assert_eq!(
+    ///     IpAddr::V6(addr),
+    ///     IpAddr::from(addr)
+    /// );
+    /// ```
     fn from(ipv6: Ipv6Addr) -> IpAddr {
         IpAddr::V6(ipv6)
     }
@@ -445,7 +613,7 @@ impl Ipv4Addr {
             (10, _) => true,
             (172, b) if 16 <= b && b <= 31 => true,
             (192, 168) => true,
-            _ => false
+            _ => false,
         }
     }
 
@@ -498,8 +666,12 @@ impl Ipv4Addr {
     /// }
     /// ```
     pub fn is_global(&self) -> bool {
-        !self.is_private() && !self.is_loopback() && !self.is_link_local() &&
-        !self.is_broadcast() && !self.is_documentation() && !self.is_unspecified()
+        !self.is_private()
+            && !self.is_loopback()
+            && !self.is_link_local()
+            && !self.is_broadcast()
+            && !self.is_documentation()
+            && !self.is_unspecified()
     }
 
     /// Returns [`true`] if this is a multicast address (224.0.0.0/4).
@@ -568,7 +740,7 @@ impl Ipv4Addr {
             (192, 0, 2) => true,
             (198, 51, 100) => true,
             (203, 0, 113) => true,
-            _ => false
+            _ => false,
         }
     }
 
@@ -587,9 +759,16 @@ impl Ipv4Addr {
     ///            Ipv6Addr::new(0, 0, 0, 0, 0, 0, 49152, 767));
     /// ```
     pub fn to_ipv6_compatible(&self) -> Ipv6Addr {
-        Ipv6Addr::new(0, 0, 0, 0, 0, 0,
-                      ((self.inner[0] as u16) << 8) | self.inner[1] as u16,
-                      ((self.inner[2] as u16) << 8) | self.inner[3] as u16)
+        Ipv6Addr::new(
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            ((self.inner[0] as u16) << 8) | self.inner[1] as u16,
+            ((self.inner[2] as u16) << 8) | self.inner[3] as u16,
+        )
     }
 
     /// Converts this address to an IPv4-mapped [IPv6 address].
@@ -607,15 +786,26 @@ impl Ipv4Addr {
     ///            Ipv6Addr::new(0, 0, 0, 0, 0, 65535, 49152, 767));
     /// ```
     pub fn to_ipv6_mapped(&self) -> Ipv6Addr {
-        Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff,
-                      ((self.inner[0] as u16) << 8) | self.inner[1] as u16,
-                      ((self.inner[2] as u16) << 8) | self.inner[3] as u16)
+        Ipv6Addr::new(
+            0,
+            0,
+            0,
+            0,
+            0,
+            0xffff,
+            ((self.inner[0] as u16) << 8) | self.inner[1] as u16,
+            ((self.inner[2] as u16) << 8) | self.inner[3] as u16,
+        )
     }
 }
 
 impl ::fmt::Display for Ipv4Addr {
     fn fmt(&self, fmt: &mut ::fmt::Formatter) -> ::fmt::Result {
-        write!(fmt, "{}.{}.{}.{}", self.inner[0], self.inner[1], self.inner[2], self.inner[3])
+        write!(
+            fmt,
+            "{}.{}.{}.{}",
+            self.inner[0], self.inner[1], self.inner[2], self.inner[3]
+        )
     }
 }
 
@@ -689,14 +879,24 @@ impl Ipv6Addr {
     /// ```
     pub fn new(a: u16, b: u16, c: u16, d: u16, e: u16, f: u16, g: u16, h: u16) -> Ipv6Addr {
         Ipv6Addr {
-            inner: [(a >> 8) as u8, a as u8,
-                    (b >> 8) as u8, b as u8,
-                    (c >> 8) as u8, c as u8,
-                    (d >> 8) as u8, d as u8,
-                    (e >> 8) as u8, e as u8,
-                    (f >> 8) as u8, f as u8,
-                    (g >> 8) as u8, g as u8,
-                    (h >> 8) as u8, h as u8],
+            inner: [
+                (a >> 8) as u8,
+                a as u8,
+                (b >> 8) as u8,
+                b as u8,
+                (c >> 8) as u8,
+                c as u8,
+                (d >> 8) as u8,
+                d as u8,
+                (e >> 8) as u8,
+                e as u8,
+                (f >> 8) as u8,
+                f as u8,
+                (g >> 8) as u8,
+                g as u8,
+                (h >> 8) as u8,
+                h as u8,
+            ],
         }
     }
 
@@ -842,7 +1042,7 @@ impl Ipv6Addr {
         match self.multicast_scope() {
             Some(Ipv6MulticastScope::Global) => true,
             None => self.is_unicast_global(),
-            _ => false
+            _ => false,
         }
     }
 
@@ -958,9 +1158,13 @@ impl Ipv6Addr {
     /// }
     /// ```
     pub fn is_unicast_global(&self) -> bool {
-        !self.is_multicast() && !self.is_loopback() && !self.is_unicast_link_local()
-            && !self.is_unicast_site_local() && !self.is_unique_local()
-            && !self.is_unspecified() && !self.is_documentation()
+        !self.is_multicast()
+            && !self.is_loopback()
+            && !self.is_unicast_link_local()
+            && !self.is_unicast_site_local()
+            && !self.is_unique_local()
+            && !self.is_unspecified()
+            && !self.is_documentation()
     }
 
     /// Returns the address's multicast scope if the address is multicast.
@@ -986,7 +1190,7 @@ impl Ipv6Addr {
                 5 => Some(Ipv6MulticastScope::SiteLocal),
                 8 => Some(Ipv6MulticastScope::OrganizationLocal),
                 14 => Some(Ipv6MulticastScope::Global),
-                _ => None
+                _ => None,
             }
         } else {
             None
@@ -1033,11 +1237,13 @@ impl Ipv6Addr {
     /// ```
     pub fn to_ipv4(&self) -> Option<Ipv4Addr> {
         match self.segments() {
-            [0, 0, 0, 0, 0, f, g, h] if f == 0 || f == 0xffff => {
-                Some(Ipv4Addr::new((g >> 8) as u8, g as u8,
-                                   (h >> 8) as u8, h as u8))
-            },
-            _ => None
+            [0, 0, 0, 0, 0, f, g, h] if f == 0 || f == 0xffff => Some(Ipv4Addr::new(
+                (g >> 8) as u8,
+                g as u8,
+                (h >> 8) as u8,
+                h as u8,
+            )),
+            _ => None,
         }
     }
 
@@ -1062,15 +1268,23 @@ impl ::fmt::Display for Ipv6Addr {
             [0, 0, 0, 0, 0, 0, 0, 0] => write!(fmt, "::"),
             [0, 0, 0, 0, 0, 0, 0, 1] => write!(fmt, "::1"),
             // Ipv4 Compatible address
-            [0, 0, 0, 0, 0, 0, g, h] => {
-                write!(fmt, "::{}.{}.{}.{}", (g >> 8) as u8, g as u8,
-                       (h >> 8) as u8, h as u8)
-            }
+            [0, 0, 0, 0, 0, 0, g, h] => write!(
+                fmt,
+                "::{}.{}.{}.{}",
+                (g >> 8) as u8,
+                g as u8,
+                (h >> 8) as u8,
+                h as u8
+            ),
             // Ipv4-Mapped address
-            [0, 0, 0, 0, 0, 0xffff, g, h] => {
-                write!(fmt, "::ffff:{}.{}.{}.{}", (g >> 8) as u8, g as u8,
-                       (h >> 8) as u8, h as u8)
-            },
+            [0, 0, 0, 0, 0, 0xffff, g, h] => write!(
+                fmt,
+                "::ffff:{}.{}.{}.{}",
+                (g >> 8) as u8,
+                g as u8,
+                (h >> 8) as u8,
+                h as u8
+            ),
             _ => {
                 fn find_zero_slice(segments: &[u16; 8]) -> (usize, usize) {
                     let mut longest_span_len = 0;
@@ -1117,8 +1331,11 @@ impl ::fmt::Display for Ipv6Addr {
                     fmt_subslice(&self.segments()[zeros_at + zeros_len..], fmt)
                 } else {
                     let &[a, b, c, d, e, f, g, h] = &self.segments();
-                    write!(fmt, "{:x}:{:x}:{:x}:{:x}:{:x}:{:x}:{:x}:{:x}",
-                           a, b, c, d, e, f, g, h)
+                    write!(
+                        fmt,
+                        "{:x}:{:x}:{:x}:{:x}:{:x}:{:x}:{:x}:{:x}",
+                        a, b, c, d, e, f, g, h
+                    )
                 }
             }
         }
@@ -1169,6 +1386,19 @@ impl PartialOrd<IpAddr> for Ipv6Addr {
 
 #[cfg(feature = "i128")]
 impl From<Ipv6Addr> for u128 {
+    /// Convert an `Ipv6Addr` into a host byte order `u128`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::Ipv6Addr;
+    ///
+    /// let addr = Ipv6Addr::new(
+    ///     0x1020, 0x3040, 0x5060, 0x7080,
+    ///     0x90A0, 0xB0C0, 0xD0E0, 0xF00D,
+    /// );
+    /// assert_eq!(0x102030405060708090A0B0C0D0E0F00D_u128, u128::from(addr));
+    /// ```
     fn from(ip: Ipv6Addr) -> u128 {
         NetworkEndian::read_u128(&ip.inner)
     }
@@ -1176,6 +1406,21 @@ impl From<Ipv6Addr> for u128 {
 
 #[cfg(feature = "i128")]
 impl From<u128> for Ipv6Addr {
+    /// Convert a host byte order `u128` into an `Ipv6Addr`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::Ipv6Addr;
+    ///
+    /// let addr = Ipv6Addr::from(0x102030405060708090A0B0C0D0E0F00D_u128);
+    /// assert_eq!(
+    ///     Ipv6Addr::new(
+    ///         0x1020, 0x3040, 0x5060, 0x7080,
+    ///         0x90A0, 0xB0C0, 0xD0E0, 0xF00D,
+    ///     ),
+    ///     addr);
+    /// ```
     fn from(ip: u128) -> Ipv6Addr {
         let mut res = Ipv6Addr::localhost();
         NetworkEndian::write_u128(&mut res.inner, ip);
