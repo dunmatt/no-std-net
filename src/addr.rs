@@ -4,7 +4,6 @@
 
 use core::{ iter, option, slice };
 use core::result::Result;
-// use byteorder::{ ByteOrder, NetworkEndian };
 use ::{ IpAddr, Ipv4Addr, Ipv6Addr };
 
 /// An internet socket address, either IPv4 or IPv6.
