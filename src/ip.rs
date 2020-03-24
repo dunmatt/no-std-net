@@ -4,8 +4,6 @@
 
 use core::cmp::Ordering;
 
-use byteorder::{ByteOrder, NetworkEndian};
-
 // TODO: copy the parsers over from https://github.com/rust-lang/rust/blob/master/src/libstd/net/parser.rs
 // and update all the tests
 
@@ -853,15 +851,13 @@ impl PartialOrd<IpAddr> for Ipv4Addr {
 
 impl From<Ipv4Addr> for u32 {
     fn from(ip: Ipv4Addr) -> u32 {
-        NetworkEndian::read_u32(&ip.inner)
+        u32::from_be_bytes(ip.inner)
     }
 }
 
 impl From<u32> for Ipv4Addr {
     fn from(ip: u32) -> Ipv4Addr {
-        let mut res = Ipv4Addr::localhost();
-        NetworkEndian::write_u32(&mut res.inner, ip);
-        res
+        Ipv4Addr { inner: u32::to_be_bytes(ip) }
     }
 }
 
@@ -1400,7 +1396,7 @@ impl From<Ipv6Addr> for u128 {
     /// assert_eq!(0x102030405060708090A0B0C0D0E0F00D_u128, u128::from(addr));
     /// ```
     fn from(ip: Ipv6Addr) -> u128 {
-        NetworkEndian::read_u128(&ip.inner)
+        u128::from_be_bytes(ip.inner)
     }
 }
 
@@ -1422,9 +1418,7 @@ impl From<u128> for Ipv6Addr {
     ///     addr);
     /// ```
     fn from(ip: u128) -> Ipv6Addr {
-        let mut res = Ipv6Addr::localhost();
-        NetworkEndian::write_u128(&mut res.inner, ip);
-        res
+        Ipv6Addr { inner: u128::to_be_bytes(ip) }
     }
 }
 

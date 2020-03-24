@@ -48,8 +48,6 @@
 )]
 #![forbid(unsafe_code)]
 
-extern crate byteorder;
-
 use core::fmt;
 
 mod addr;
