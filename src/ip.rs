@@ -1380,7 +1380,6 @@ impl PartialOrd<IpAddr> for Ipv6Addr {
     }
 }
 
-#[cfg(feature = "i128")]
 impl From<Ipv6Addr> for u128 {
     /// Convert an `Ipv6Addr` into a host byte order `u128`.
     ///
@@ -1400,7 +1399,6 @@ impl From<Ipv6Addr> for u128 {
     }
 }
 
-#[cfg(feature = "i128")]
 impl From<u128> for Ipv6Addr {
     /// Convert a host byte order `u128` into an `Ipv6Addr`.
     ///

@@ -19,4 +19,6 @@ serde_test = "^1"
 
 [features]
 default = [ ]
+
+# Deprecated. Does nothing.
 i128 = [ ]
