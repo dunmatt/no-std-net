@@ -15,24 +15,24 @@
 //!
 //! * [`IpAddr`] represents IP addresses of either IPv4 or IPv6; [`Ipv4Addr`] and
 //!   [`Ipv6Addr`] are respectively IPv4 and IPv6 addresses
+//! * [`TcpListener`] and [`TcpStream`] provide functionality for communication over TCP
+//! * [`UdpSocket`] provides functionality for communication over UDP
+//! * [`SocketAddr`] represents socket addresses of either IPv4 or IPv6; [`SocketAddrV4`]
+//!   and [`SocketAddrV6`] are respectively IPv4 and IPv6 socket addresses
+//! * [`ToSocketAddrs`] is a trait that used for generic address resolution when interacting
+//!   with networking objects like [`TcpListener`], [`TcpStream`] or [`UdpSocket`]
+//! * Other types are return or parameter types for various methods in this module
+//!
 //! [`IpAddr`]: ../../no-std-net/enum.IpAddr.html
 //! [`Ipv4Addr`]: ../../no-std-net/struct.Ipv4Addr.html
 //! [`Ipv6Addr`]: ../../no-std-net/struct.Ipv6Addr.html
-// ! * [`TcpListener`] and [`TcpStream`] provide functionality for communication over TCP
-// ! * [`UdpSocket`] provides functionality for communication over UDP
-// ! * [`SocketAddr`] represents socket addresses of either IPv4 or IPv6; [`SocketAddrV4`]
-// !   and [`SocketAddrV6`] are respectively IPv4 and IPv6 socket addresses
-// ! * [`ToSocketAddrs`] is a trait that used for generic address resolution when interacting
-// !   with networking objects like [`TcpListener`], [`TcpStream`] or [`UdpSocket`]
-// ! * Other types are return or parameter types for various methods in this module
-// !
-// ! [`SocketAddr`]: ../../std/net/enum.SocketAddr.html
-// ! [`SocketAddrV4`]: ../../std/net/struct.SocketAddrV4.html
-// ! [`SocketAddrV6`]: ../../std/net/struct.SocketAddrV6.html
-// ! [`TcpListener`]: ../../std/net/struct.TcpListener.html
-// ! [`TcpStream`]: ../../std/net/struct.TcpStream.html
-// ! [`ToSocketAddrs`]: ../../std/net/trait.ToSocketAddrs.html
-// ! [`UdpSocket`]: ../../std/net/struct.UdpSocket.html
+//! [`SocketAddr`]: ../../std/net/enum.SocketAddr.html
+//! [`SocketAddrV4`]: ../../std/net/struct.SocketAddrV4.html
+//! [`SocketAddrV6`]: ../../std/net/struct.SocketAddrV6.html
+//! [`TcpListener`]: ../../std/net/struct.TcpListener.html
+//! [`TcpStream`]: ../../std/net/struct.TcpStream.html
+//! [`ToSocketAddrs`]: ../../std/net/trait.ToSocketAddrs.html
+//! [`UdpSocket`]: ../../std/net/struct.UdpSocket.html
 
 // TODO: figure out how to put links into rustdocs and update the above
 
