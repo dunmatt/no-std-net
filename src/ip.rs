@@ -135,7 +135,7 @@ impl IpAddr {
     /// assert_eq!(IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0)).is_unspecified(), true);
     /// assert_eq!(IpAddr::V6(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 0)).is_unspecified(), true);
     /// ```
-    pub fn is_unspecified(&self) -> bool {
+    pub const fn is_unspecified(&self) -> bool {
         match *self {
             IpAddr::V4(ref a) => a.is_unspecified(),
             IpAddr::V6(ref a) => a.is_unspecified(),
@@ -159,7 +159,7 @@ impl IpAddr {
     /// assert_eq!(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)).is_loopback(), true);
     /// assert_eq!(IpAddr::V6(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 0x1)).is_loopback(), true);
     /// ```
-    pub fn is_loopback(&self) -> bool {
+    pub const fn is_loopback(&self) -> bool {
         match *self {
             IpAddr::V4(ref a) => a.is_loopback(),
             IpAddr::V6(ref a) => a.is_loopback(),
@@ -186,7 +186,7 @@ impl IpAddr {
     ///                true);
     /// }
     /// ```
-    pub fn is_global(&self) -> bool {
+    pub const fn is_global(&self) -> bool {
         match *self {
             IpAddr::V4(ref a) => a.is_global(),
             IpAddr::V6(ref a) => a.is_global(),
@@ -539,8 +539,8 @@ impl Ipv4Addr {
     /// let addr = Ipv4Addr::new(127, 0, 0, 1);
     /// assert_eq!(addr.octets(), [127, 0, 0, 1]);
     /// ```
-    pub fn octets(&self) -> [u8; 4] {
-        self.inner.clone()
+    pub const fn octets(&self) -> [u8; 4] {
+        [self.inner[0], self.inner[1], self.inner[2], self.inner[3]]
     }
 
     /// Returns [`true`] for the special 'unspecified' address (0.0.0.0).
@@ -559,8 +559,8 @@ impl Ipv4Addr {
     /// assert_eq!(Ipv4Addr::new(0, 0, 0, 0).is_unspecified(), true);
     /// assert_eq!(Ipv4Addr::new(45, 22, 13, 197).is_unspecified(), false);
     /// ```
-    pub fn is_unspecified(&self) -> bool {
-        self.inner.iter().all(|b| *b == 0)
+    pub const fn is_unspecified(&self) -> bool {
+        self.inner[0] == 0 && self.inner[1] == 0 && self.inner[2] == 0 && self.inner[3] == 0
     }
 
     /// Returns [`true`] if this is a loopback address (127.0.0.0/8).
@@ -663,7 +663,7 @@ impl Ipv4Addr {
     ///     assert_eq!(Ipv4Addr::new(80, 9, 12, 3).is_global(), true);
     /// }
     /// ```
-    pub fn is_global(&self) -> bool {
+    pub const fn is_global(&self) -> bool {
         !self.is_private()
             && !self.is_loopback()
             && !self.is_link_local()
@@ -708,8 +708,8 @@ impl Ipv4Addr {
     /// assert_eq!(Ipv4Addr::new(255, 255, 255, 255).is_broadcast(), true);
     /// assert_eq!(Ipv4Addr::new(236, 168, 10, 65).is_broadcast(), false);
     /// ```
-    pub fn is_broadcast(&self) -> bool {
-        self.inner.iter().all(|b| *b == 255)
+    pub const fn is_broadcast(&self) -> bool {
+        self.inner[0] == 255 && self.inner[1] == 255 && self.inner[2] == 255 && self.inner[3] == 255
     }
 
     /// Returns [`true`] if this address is in a range designated for documentation.
@@ -991,8 +991,15 @@ impl Ipv6Addr {
     /// assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff).is_unspecified(), false);
     /// assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 0).is_unspecified(), true);
     /// ```
-    pub fn is_unspecified(&self) -> bool {
-        self.inner.iter().all(|b| *b == 0)
+    pub const fn is_unspecified(&self) -> bool {
+        let mut i = 0;
+        while i < 16 {
+            if self.inner[i] != 0 {
+                return false;
+            }
+            i += 1
+        }
+        true
     }
 
     /// Returns [`true`] if this is a loopback address (::1).
@@ -1010,8 +1017,16 @@ impl Ipv6Addr {
     /// assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff).is_loopback(), false);
     /// assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 0x1).is_loopback(), true);
     /// ```
-    pub fn is_loopback(&self) -> bool {
-        self.segments() == [0, 0, 0, 0, 0, 0, 0, 1]
+    pub const fn is_loopback(&self) -> bool {
+        let seg = self.segments();
+        seg[0] == 0
+            && seg[1] == 0
+            && seg[2] == 0
+            && seg[3] == 0
+            && seg[4] == 0
+            && seg[5] == 0
+            && seg[6] == 0
+            && seg[7] == 1
     }
 
     /// Returns [`true`] if the address appears to be globally routable.
@@ -1036,7 +1051,7 @@ impl Ipv6Addr {
     ///     assert_eq!(Ipv6Addr::new(0, 0, 0x1c9, 0, 0, 0xafc8, 0, 0x1).is_global(), true);
     /// }
     /// ```
-    pub fn is_global(&self) -> bool {
+    pub const fn is_global(&self) -> bool {
         match self.multicast_scope() {
             Some(Ipv6MulticastScope::Global) => true,
             None => self.is_unicast_global(),
@@ -1155,7 +1170,7 @@ impl Ipv6Addr {
     ///                true);
     /// }
     /// ```
-    pub fn is_unicast_global(&self) -> bool {
+    pub const fn is_unicast_global(&self) -> bool {
         !self.is_multicast()
             && !self.is_loopback()
             && !self.is_unicast_link_local()
@@ -1253,8 +1268,25 @@ impl Ipv6Addr {
     /// assert_eq!(Ipv6Addr::new(0xff00, 0, 0, 0, 0, 0, 0, 0).octets(),
     ///            [255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     /// ```
-    pub fn octets(&self) -> [u8; 16] {
-        self.inner.clone()
+    pub const fn octets(&self) -> [u8; 16] {
+        [
+            self.inner[0],
+            self.inner[1],
+            self.inner[2],
+            self.inner[3],
+            self.inner[4],
+            self.inner[5],
+            self.inner[6],
+            self.inner[7],
+            self.inner[8],
+            self.inner[9],
+            self.inner[10],
+            self.inner[11],
+            self.inner[12],
+            self.inner[13],
+            self.inner[14],
+            self.inner[15],
+        ]
     }
 }
 
