@@ -210,7 +210,7 @@ impl IpAddr {
     /// assert_eq!(IpAddr::V4(Ipv4Addr::new(224, 254, 0, 0)).is_multicast(), true);
     /// assert_eq!(IpAddr::V6(Ipv6Addr::new(0xff00, 0, 0, 0, 0, 0, 0, 0)).is_multicast(), true);
     /// ```
-    pub fn is_multicast(&self) -> bool {
+    pub const fn is_multicast(&self) -> bool {
         match *self {
             IpAddr::V4(ref a) => a.is_multicast(),
             IpAddr::V6(ref a) => a.is_multicast(),
@@ -237,7 +237,7 @@ impl IpAddr {
     ///                       .is_documentation(), true);
     /// }
     /// ```
-    pub fn is_documentation(&self) -> bool {
+    pub const fn is_documentation(&self) -> bool {
         match *self {
             IpAddr::V4(ref a) => a.is_documentation(),
             IpAddr::V6(ref a) => a.is_documentation(),
@@ -261,7 +261,7 @@ impl IpAddr {
     ///                false);
     /// }
     /// ```
-    pub fn is_ipv4(&self) -> bool {
+    pub const fn is_ipv4(&self) -> bool {
         match *self {
             IpAddr::V4(_) => true,
             IpAddr::V6(_) => false,
@@ -285,7 +285,7 @@ impl IpAddr {
     ///                true);
     /// }
     /// ```
-    pub fn is_ipv6(&self) -> bool {
+    pub const fn is_ipv6(&self) -> bool {
         match *self {
             IpAddr::V4(_) => false,
             IpAddr::V6(_) => true,
@@ -495,7 +495,7 @@ impl Ipv4Addr {
     ///
     /// let addr = Ipv4Addr::new(127, 0, 0, 1);
     /// ```
-    pub fn new(a: u8, b: u8, c: u8, d: u8) -> Ipv4Addr {
+    pub const fn new(a: u8, b: u8, c: u8, d: u8) -> Ipv4Addr {
         Ipv4Addr {
             inner: [a, b, c, d],
         }
@@ -511,7 +511,7 @@ impl Ipv4Addr {
     /// let addr = Ipv4Addr::localhost();
     /// assert_eq!(addr, Ipv4Addr::new(127, 0, 0, 1));
     /// ```
-    pub fn localhost() -> Ipv4Addr {
+    pub const fn localhost() -> Ipv4Addr {
         Ipv4Addr::new(127, 0, 0, 1)
     }
 
@@ -525,7 +525,7 @@ impl Ipv4Addr {
     /// let addr = Ipv4Addr::unspecified();
     /// assert_eq!(addr, Ipv4Addr::new(0, 0, 0, 0));
     /// ```
-    pub fn unspecified() -> Ipv4Addr {
+    pub const fn unspecified() -> Ipv4Addr {
         Ipv4Addr::new(0, 0, 0, 0)
     }
 
@@ -578,7 +578,7 @@ impl Ipv4Addr {
     /// assert_eq!(Ipv4Addr::new(127, 0, 0, 1).is_loopback(), true);
     /// assert_eq!(Ipv4Addr::new(45, 22, 13, 197).is_loopback(), false);
     /// ```
-    pub fn is_loopback(&self) -> bool {
+    pub const fn is_loopback(&self) -> bool {
         self.inner[0] == 127
     }
 
@@ -606,7 +606,7 @@ impl Ipv4Addr {
     /// assert_eq!(Ipv4Addr::new(192, 168, 0, 2).is_private(), true);
     /// assert_eq!(Ipv4Addr::new(192, 169, 0, 2).is_private(), false);
     /// ```
-    pub fn is_private(&self) -> bool {
+    pub const fn is_private(&self) -> bool {
         match (self.inner[0], self.inner[1]) {
             (10, _) => true,
             (172, b) if 16 <= b && b <= 31 => true,
@@ -631,7 +631,7 @@ impl Ipv4Addr {
     /// assert_eq!(Ipv4Addr::new(169, 254, 10, 65).is_link_local(), true);
     /// assert_eq!(Ipv4Addr::new(16, 89, 10, 65).is_link_local(), false);
     /// ```
-    pub fn is_link_local(&self) -> bool {
+    pub const fn is_link_local(&self) -> bool {
         self.inner[0] == 169 && self.inner[1] == 254
     }
 
@@ -689,7 +689,7 @@ impl Ipv4Addr {
     /// assert_eq!(Ipv4Addr::new(236, 168, 10, 65).is_multicast(), true);
     /// assert_eq!(Ipv4Addr::new(172, 16, 10, 65).is_multicast(), false);
     /// ```
-    pub fn is_multicast(&self) -> bool {
+    pub const fn is_multicast(&self) -> bool {
         self.inner[0] & 0xF0 == 0xE0
     }
 
@@ -733,7 +733,7 @@ impl Ipv4Addr {
     /// assert_eq!(Ipv4Addr::new(203, 0, 113, 6).is_documentation(), true);
     /// assert_eq!(Ipv4Addr::new(193, 34, 17, 19).is_documentation(), false);
     /// ```
-    pub fn is_documentation(&self) -> bool {
+    pub const fn is_documentation(&self) -> bool {
         match (self.inner[0], self.inner[1], self.inner[2]) {
             (192, 0, 2) => true,
             (198, 51, 100) => true,
@@ -756,7 +756,7 @@ impl Ipv4Addr {
     /// assert_eq!(Ipv4Addr::new(192, 0, 2, 255).to_ipv6_compatible(),
     ///            Ipv6Addr::new(0, 0, 0, 0, 0, 0, 49152, 767));
     /// ```
-    pub fn to_ipv6_compatible(&self) -> Ipv6Addr {
+    pub const fn to_ipv6_compatible(&self) -> Ipv6Addr {
         Ipv6Addr::new(
             0,
             0,
@@ -783,7 +783,7 @@ impl Ipv4Addr {
     /// assert_eq!(Ipv4Addr::new(192, 0, 2, 255).to_ipv6_mapped(),
     ///            Ipv6Addr::new(0, 0, 0, 0, 0, 65535, 49152, 767));
     /// ```
-    pub fn to_ipv6_mapped(&self) -> Ipv6Addr {
+    pub const fn to_ipv6_mapped(&self) -> Ipv6Addr {
         Ipv6Addr::new(
             0,
             0,
@@ -857,7 +857,9 @@ impl From<Ipv4Addr> for u32 {
 
 impl From<u32> for Ipv4Addr {
     fn from(ip: u32) -> Ipv4Addr {
-        Ipv4Addr { inner: u32::to_be_bytes(ip) }
+        Ipv4Addr {
+            inner: u32::to_be_bytes(ip),
+        }
     }
 }
 
@@ -873,7 +875,7 @@ impl Ipv6Addr {
     ///
     /// let addr = Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff);
     /// ```
-    pub fn new(a: u16, b: u16, c: u16, d: u16, e: u16, f: u16, g: u16, h: u16) -> Ipv6Addr {
+    pub const fn new(a: u16, b: u16, c: u16, d: u16, e: u16, f: u16, g: u16, h: u16) -> Ipv6Addr {
         Ipv6Addr {
             inner: [
                 (a >> 8) as u8,
@@ -906,7 +908,7 @@ impl Ipv6Addr {
     /// let addr = Ipv6Addr::localhost();
     /// assert_eq!(addr, Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1));
     /// ```
-    pub fn localhost() -> Ipv6Addr {
+    pub const fn localhost() -> Ipv6Addr {
         Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1)
     }
 
@@ -920,7 +922,7 @@ impl Ipv6Addr {
     /// let addr = Ipv6Addr::unspecified();
     /// assert_eq!(addr, Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 0));
     /// ```
-    pub fn unspecified() -> Ipv6Addr {
+    pub const fn unspecified() -> Ipv6Addr {
         Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 0)
     }
 
@@ -933,7 +935,7 @@ impl Ipv6Addr {
     ///
     /// assert_eq!(Ipv6Addr::new(0x0011, 0x2233, 0, 0, 0, 0, 0, 0).first_segment(), 0x11);
     /// ```
-    pub fn first_segment(&self) -> u16 {
+    pub const fn first_segment(&self) -> u16 {
         (self.inner[0] as u16) << 8 | (self.inner[1] as u16)
     }
 
@@ -946,7 +948,7 @@ impl Ipv6Addr {
     ///
     /// assert_eq!(Ipv6Addr::new(0x0011, 0x2233, 0, 0, 0, 0, 0, 0).second_segment(), 0x2233);
     /// ```
-    pub fn second_segment(&self) -> u16 {
+    pub const fn second_segment(&self) -> u16 {
         (self.inner[2] as u16) << 8 | (self.inner[3] as u16)
     }
 
@@ -960,7 +962,7 @@ impl Ipv6Addr {
     /// assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff).segments(),
     ///            [0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff]);
     /// ```
-    pub fn segments(&self) -> [u16; 8] {
+    pub const fn segments(&self) -> [u16; 8] {
         let arr = &self.inner;
         [
             (arr[0] as u16) << 8 | (arr[1] as u16),
@@ -1060,7 +1062,7 @@ impl Ipv6Addr {
     ///     assert_eq!(Ipv6Addr::new(0xfc02, 0, 0, 0, 0, 0, 0, 0).is_unique_local(), true);
     /// }
     /// ```
-    pub fn is_unique_local(&self) -> bool {
+    pub const fn is_unique_local(&self) -> bool {
         self.inner[0] & 0xfe == 0xfc
     }
 
@@ -1082,7 +1084,7 @@ impl Ipv6Addr {
     ///     assert_eq!(Ipv6Addr::new(0xfe8a, 0, 0, 0, 0, 0, 0, 0).is_unicast_link_local(), true);
     /// }
     /// ```
-    pub fn is_unicast_link_local(&self) -> bool {
+    pub const fn is_unicast_link_local(&self) -> bool {
         self.first_segment() & 0xffc0 == 0xfe80
     }
 
@@ -1102,7 +1104,7 @@ impl Ipv6Addr {
     ///     assert_eq!(Ipv6Addr::new(0xfec2, 0, 0, 0, 0, 0, 0, 0).is_unicast_site_local(), true);
     /// }
     /// ```
-    pub fn is_unicast_site_local(&self) -> bool {
+    pub const fn is_unicast_site_local(&self) -> bool {
         self.first_segment() & 0xffc0 == 0xfec0
     }
 
@@ -1125,7 +1127,7 @@ impl Ipv6Addr {
     ///     assert_eq!(Ipv6Addr::new(0x2001, 0xdb8, 0, 0, 0, 0, 0, 0).is_documentation(), true);
     /// }
     /// ```
-    pub fn is_documentation(&self) -> bool {
+    pub const fn is_documentation(&self) -> bool {
         self.first_segment() == 0x2001 && self.second_segment() == 0xdb8
     }
 
@@ -1176,7 +1178,7 @@ impl Ipv6Addr {
     ///     assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff).multicast_scope(), None);
     /// }
     /// ```
-    pub fn multicast_scope(&self) -> Option<Ipv6MulticastScope> {
+    pub const fn multicast_scope(&self) -> Option<Ipv6MulticastScope> {
         if self.is_multicast() {
             match self.inner[1] & 0x0F {
                 1 => Some(Ipv6MulticastScope::InterfaceLocal),
@@ -1208,7 +1210,7 @@ impl Ipv6Addr {
     /// assert_eq!(Ipv6Addr::new(0xff00, 0, 0, 0, 0, 0, 0, 0).is_multicast(), true);
     /// assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff).is_multicast(), false);
     /// ```
-    pub fn is_multicast(&self) -> bool {
+    pub const fn is_multicast(&self) -> bool {
         self.inner[0] == 0xff
     }
 
@@ -1231,7 +1233,7 @@ impl Ipv6Addr {
     /// assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1).to_ipv4(),
     ///            Some(Ipv4Addr::new(0, 0, 0, 1)));
     /// ```
-    pub fn to_ipv4(&self) -> Option<Ipv4Addr> {
+    pub const fn to_ipv4(&self) -> Option<Ipv4Addr> {
         match self.segments() {
             [0, 0, 0, 0, 0, f, g, h] if f == 0 || f == 0xffff => Some(Ipv4Addr::new(
                 (g >> 8) as u8,
@@ -1416,7 +1418,9 @@ impl From<u128> for Ipv6Addr {
     ///     addr);
     /// ```
     fn from(ip: u128) -> Ipv6Addr {
-        Ipv6Addr { inner: u128::to_be_bytes(ip) }
+        Ipv6Addr {
+            inner: u128::to_be_bytes(ip),
+        }
     }
 }
 

@@ -2,9 +2,9 @@
 // They hold the copyright (http://rust-lang.org/COPYRIGHT) and whatever other rights, but this
 // crate is MIT licensed also, so it's all good.
 
-use core::{ iter, option, slice };
 use core::result::Result;
-use ::{ IpAddr, Ipv4Addr, Ipv6Addr };
+use core::{iter, option, slice};
+use {IpAddr, Ipv4Addr, Ipv6Addr};
 
 /// An internet socket address, either IPv4 or IPv6.
 ///
@@ -49,7 +49,7 @@ impl SocketAddr {
     /// assert_eq!(socket.ip(), IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)));
     /// assert_eq!(socket.port(), 8080);
     /// ```
-    pub fn new(ip: IpAddr, port: u16) -> SocketAddr {
+    pub const fn new(ip: IpAddr, port: u16) -> SocketAddr {
         match ip {
             IpAddr::V4(a) => SocketAddr::V4(SocketAddrV4::new(a, port)),
             IpAddr::V6(a) => SocketAddr::V6(SocketAddrV6::new(a, port, 0, 0)),
@@ -66,7 +66,7 @@ impl SocketAddr {
     /// let socket = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 8080);
     /// assert_eq!(socket.ip(), IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)));
     /// ```
-    pub fn ip(&self) -> IpAddr {
+    pub const fn ip(&self) -> IpAddr {
         match *self {
             SocketAddr::V4(ref a) => IpAddr::V4(*a.ip()),
             SocketAddr::V6(ref a) => IpAddr::V6(*a.ip()),
@@ -103,7 +103,7 @@ impl SocketAddr {
     /// let socket = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 8080);
     /// assert_eq!(socket.port(), 8080);
     /// ```
-    pub fn port(&self) -> u16 {
+    pub const fn port(&self) -> u16 {
         match *self {
             SocketAddr::V4(ref a) => a.port(),
             SocketAddr::V6(ref a) => a.port(),
@@ -147,7 +147,7 @@ impl SocketAddr {
     ///     assert_eq!(socket.is_ipv6(), false);
     /// }
     /// ```
-    pub fn is_ipv4(&self) -> bool {
+    pub const fn is_ipv4(&self) -> bool {
         match *self {
             SocketAddr::V4(_) => true,
             SocketAddr::V6(_) => false,
@@ -174,7 +174,7 @@ impl SocketAddr {
     ///     assert_eq!(socket.is_ipv6(), true);
     /// }
     /// ```
-    pub fn is_ipv6(&self) -> bool {
+    pub const fn is_ipv6(&self) -> bool {
         match *self {
             SocketAddr::V4(_) => false,
             SocketAddr::V6(_) => true,
@@ -206,8 +206,8 @@ impl SocketAddr {
 /// ```
 #[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct SocketAddrV4 {
-  addr: Ipv4Addr,
-  port: u16,
+    addr: Ipv4Addr,
+    port: u16,
 }
 
 impl SocketAddrV4 {
@@ -222,7 +222,7 @@ impl SocketAddrV4 {
     ///
     /// let socket = SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 8080);
     /// ```
-    pub fn new(ip: Ipv4Addr, port: u16) -> SocketAddrV4 {
+    pub const fn new(ip: Ipv4Addr, port: u16) -> SocketAddrV4 {
         SocketAddrV4 {
             addr: ip,
             port: port,
@@ -239,7 +239,7 @@ impl SocketAddrV4 {
     /// let socket = SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 8080);
     /// assert_eq!(socket.ip(), &Ipv4Addr::new(127, 0, 0, 1));
     /// ```
-    pub fn ip(&self) -> &Ipv4Addr {
+    pub const fn ip(&self) -> &Ipv4Addr {
         &self.addr
     }
 
@@ -268,7 +268,7 @@ impl SocketAddrV4 {
     /// let socket = SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 8080);
     /// assert_eq!(socket.port(), 8080);
     /// ```
-    pub fn port(&self) -> u16 {
+    pub const fn port(&self) -> u16 {
         self.port
     }
 
@@ -313,10 +313,10 @@ impl SocketAddrV4 {
 /// ```
 #[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct SocketAddrV6 {
-  addr: Ipv6Addr,
-  port: u16,
-  flow_info: u32,
-  scope_id: u32,
+    addr: Ipv6Addr,
+    port: u16,
+    flow_info: u32,
+    scope_id: u32,
 }
 
 impl SocketAddrV6 {
@@ -336,12 +336,12 @@ impl SocketAddrV6 {
     ///
     /// let socket = SocketAddrV6::new(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1), 8080, 0, 0);
     /// ```
-    pub fn new(ip: Ipv6Addr, port: u16, flowinfo: u32, scope_id: u32) -> SocketAddrV6 {
+    pub const fn new(ip: Ipv6Addr, port: u16, flowinfo: u32, scope_id: u32) -> SocketAddrV6 {
         SocketAddrV6 {
             addr: ip,
             port: port,
             flow_info: flowinfo,
-            scope_id: scope_id
+            scope_id: scope_id,
         }
     }
 
@@ -355,7 +355,7 @@ impl SocketAddrV6 {
     /// let socket = SocketAddrV6::new(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1), 8080, 0, 0);
     /// assert_eq!(socket.ip(), &Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1));
     /// ```
-    pub fn ip(&self) -> &Ipv6Addr {
+    pub const fn ip(&self) -> &Ipv6Addr {
         &self.addr
     }
 
@@ -384,7 +384,7 @@ impl SocketAddrV6 {
     /// let socket = SocketAddrV6::new(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1), 8080, 0, 0);
     /// assert_eq!(socket.port(), 8080);
     /// ```
-    pub fn port(&self) -> u16 {
+    pub const fn port(&self) -> u16 {
         self.port
     }
 
@@ -423,7 +423,7 @@ impl SocketAddrV6 {
     /// let socket = SocketAddrV6::new(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1), 8080, 10, 0);
     /// assert_eq!(socket.flowinfo(), 10);
     /// ```
-    pub fn flowinfo(&self) -> u32 {
+    pub const fn flowinfo(&self) -> u32 {
         self.flow_info
     }
 
@@ -461,7 +461,7 @@ impl SocketAddrV6 {
     /// let socket = SocketAddrV6::new(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1), 8080, 0, 78);
     /// assert_eq!(socket.scope_id(), 78);
     /// ```
-    pub fn scope_id(&self) -> u32 {
+    pub const fn scope_id(&self) -> u32 {
         self.scope_id
     }
 
@@ -503,7 +503,6 @@ impl<I: Into<IpAddr>> From<(I, u16)> for SocketAddr {
     }
 }
 
-
 impl ::fmt::Display for SocketAddr {
     fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
         match *self {
@@ -536,7 +535,6 @@ impl ::fmt::Debug for SocketAddrV6 {
         ::fmt::Display::fmt(self, fmt)
     }
 }
-
 
 /// A trait for objects which can be converted or resolved to one or more
 /// [`SocketAddr`] values.
@@ -585,7 +583,7 @@ impl ::fmt::Debug for SocketAddrV6 {
 ///
 pub trait ToSocketAddrs {
     /// Returned iterator over socket addresses which this type may correspond to.
-    type Iter: Iterator<Item=SocketAddr>;
+    type Iter: Iterator<Item = SocketAddr>;
 
     /// Converts this object to an iterator of resolved `SocketAddr`s.
     ///
@@ -597,8 +595,7 @@ pub trait ToSocketAddrs {
 }
 
 /// This is a placeholder for the core::result::Result type parameter, it is unused.
-pub enum ToSocketAddrError {
-}
+pub enum ToSocketAddrError {}
 
 impl ToSocketAddrs for SocketAddr {
     type Iter = option::IntoIter<SocketAddr>;
