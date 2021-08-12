@@ -265,196 +265,6 @@ impl IpAddr {
     }
 }
 
-impl ::fmt::Display for IpAddr {
-    fn fmt(&self, fmt: &mut ::fmt::Formatter) -> ::fmt::Result {
-        match *self {
-            IpAddr::V4(ref a) => a.fmt(fmt),
-            IpAddr::V6(ref a) => a.fmt(fmt),
-        }
-    }
-}
-
-impl From<[u8; 4]> for Ipv4Addr {
-    /// Creates an `Ipv4Addr` from a four element byte array.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use no_std_net::Ipv4Addr;
-    ///
-    /// let addr = Ipv4Addr::from([13u8, 12u8, 11u8, 10u8]);
-    /// assert_eq!(Ipv4Addr::new(13, 12, 11, 10), addr);
-    /// ```
-    fn from(octets: [u8; 4]) -> Ipv4Addr {
-        Ipv4Addr::new(octets[0], octets[1], octets[2], octets[3])
-    }
-}
-
-impl From<[u8; 4]> for IpAddr {
-    /// Creates an `IpAddr::V4` from a four element byte array.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use no_std_net::{IpAddr, Ipv4Addr};
-    ///
-    /// let addr = IpAddr::from([13u8, 12u8, 11u8, 10u8]);
-    /// assert_eq!(IpAddr::V4(Ipv4Addr::new(13, 12, 11, 10)), addr);
-    /// ```
-    fn from(octets: [u8; 4]) -> IpAddr {
-        IpAddr::V4(Ipv4Addr::from(octets))
-    }
-}
-
-impl From<[u8; 16]> for Ipv6Addr {
-    /// Creates an `Ipv6Addr` from a sixteen element byte array.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use no_std_net::Ipv6Addr;
-    ///
-    /// let addr = Ipv6Addr::from([
-    ///     25u8, 24u8, 23u8, 22u8, 21u8, 20u8, 19u8, 18u8,
-    ///     17u8, 16u8, 15u8, 14u8, 13u8, 12u8, 11u8, 10u8,
-    /// ]);
-    /// assert_eq!(
-    ///     Ipv6Addr::new(
-    ///         0x1918, 0x1716,
-    ///         0x1514, 0x1312,
-    ///         0x1110, 0x0f0e,
-    ///         0x0d0c, 0x0b0a
-    ///     ),
-    ///     addr
-    /// );
-    /// ```
-    fn from(octets: [u8; 16]) -> Ipv6Addr {
-        Ipv6Addr { inner: octets }
-    }
-}
-
-impl From<[u16; 8]> for Ipv6Addr {
-    /// Creates an `Ipv6Addr` from an eight element 16-bit array.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use no_std_net::Ipv6Addr;
-    ///
-    /// let addr = Ipv6Addr::from([
-    ///     525u16, 524u16, 523u16, 522u16,
-    ///     521u16, 520u16, 519u16, 518u16,
-    /// ]);
-    /// assert_eq!(
-    ///     Ipv6Addr::new(
-    ///         0x20d, 0x20c,
-    ///         0x20b, 0x20a,
-    ///         0x209, 0x208,
-    ///         0x207, 0x206
-    ///     ),
-    ///     addr
-    /// );
-    /// ```
-    fn from(segments: [u16; 8]) -> Ipv6Addr {
-        let [a, b, c, d, e, f, g, h] = segments;
-        Ipv6Addr::new(a, b, c, d, e, f, g, h)
-    }
-}
-
-impl From<[u8; 16]> for IpAddr {
-    /// Creates an `IpAddr::V6` from a sixteen element byte array.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use no_std_net::{IpAddr, Ipv6Addr};
-    ///
-    /// let addr = IpAddr::from([
-    ///     25u8, 24u8, 23u8, 22u8, 21u8, 20u8, 19u8, 18u8,
-    ///     17u8, 16u8, 15u8, 14u8, 13u8, 12u8, 11u8, 10u8,
-    /// ]);
-    /// assert_eq!(
-    ///     IpAddr::V6(Ipv6Addr::new(
-    ///         0x1918, 0x1716,
-    ///         0x1514, 0x1312,
-    ///         0x1110, 0x0f0e,
-    ///         0x0d0c, 0x0b0a
-    ///     )),
-    ///     addr
-    /// );
-    /// ```
-    fn from(octets: [u8; 16]) -> IpAddr {
-        IpAddr::V6(Ipv6Addr::from(octets))
-    }
-}
-
-impl From<[u16; 8]> for IpAddr {
-    /// Creates an `IpAddr::V6` from an eight element 16-bit array.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use no_std_net::{IpAddr, Ipv6Addr};
-    ///
-    /// let addr = IpAddr::from([
-    ///     525u16, 524u16, 523u16, 522u16,
-    ///     521u16, 520u16, 519u16, 518u16,
-    /// ]);
-    /// assert_eq!(
-    ///     IpAddr::V6(Ipv6Addr::new(
-    ///         0x20d, 0x20c,
-    ///         0x20b, 0x20a,
-    ///         0x209, 0x208,
-    ///         0x207, 0x206
-    ///     )),
-    ///     addr
-    /// );
-    /// ```
-    fn from(segments: [u16; 8]) -> IpAddr {
-        IpAddr::V6(Ipv6Addr::from(segments))
-    }
-}
-
-impl From<Ipv4Addr> for IpAddr {
-    /// Copies this address to a new `IpAddr::V4`.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use no_std_net::{IpAddr, Ipv4Addr};
-    ///
-    /// let addr = Ipv4Addr::new(127, 0, 0, 1);
-    ///
-    /// assert_eq!(
-    ///     IpAddr::V4(addr),
-    ///     IpAddr::from(addr)
-    /// )
-    /// ```
-    fn from(ipv4: Ipv4Addr) -> IpAddr {
-        IpAddr::V4(ipv4)
-    }
-}
-
-impl From<Ipv6Addr> for IpAddr {
-    /// Copies this address to a new `IpAddr::V6`.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use no_std_net::{IpAddr, Ipv6Addr};
-    ///
-    /// let addr = Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff);
-    ///
-    /// assert_eq!(
-    ///     IpAddr::V6(addr),
-    ///     IpAddr::from(addr)
-    /// );
-    /// ```
-    fn from(ipv6: Ipv6Addr) -> IpAddr {
-        IpAddr::V6(ipv6)
-    }
-}
-
 impl Ipv4Addr {
     /// Creates a new IPv4 address from four eight-bit octets.
     ///
@@ -761,6 +571,55 @@ impl Ipv4Addr {
     }
 }
 
+impl ::fmt::Display for IpAddr {
+    fn fmt(&self, fmt: &mut ::fmt::Formatter) -> ::fmt::Result {
+        match *self {
+            IpAddr::V4(ref a) => a.fmt(fmt),
+            IpAddr::V6(ref a) => a.fmt(fmt),
+        }
+    }
+}
+
+impl From<Ipv4Addr> for IpAddr {
+    /// Copies this address to a new `IpAddr::V4`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::{IpAddr, Ipv4Addr};
+    ///
+    /// let addr = Ipv4Addr::new(127, 0, 0, 1);
+    ///
+    /// assert_eq!(
+    ///     IpAddr::V4(addr),
+    ///     IpAddr::from(addr)
+    /// )
+    /// ```
+    fn from(ipv4: Ipv4Addr) -> IpAddr {
+        IpAddr::V4(ipv4)
+    }
+}
+
+impl From<Ipv6Addr> for IpAddr {
+    /// Copies this address to a new `IpAddr::V6`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::{IpAddr, Ipv6Addr};
+    ///
+    /// let addr = Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff);
+    ///
+    /// assert_eq!(
+    ///     IpAddr::V6(addr),
+    ///     IpAddr::from(addr)
+    /// );
+    /// ```
+    fn from(ipv6: Ipv6Addr) -> IpAddr {
+        IpAddr::V6(ipv6)
+    }
+}
+
 impl ::fmt::Display for Ipv4Addr {
     fn fmt(&self, fmt: &mut ::fmt::Formatter) -> ::fmt::Result {
         write!(
@@ -824,6 +683,38 @@ impl From<u32> for Ipv4Addr {
         Ipv4Addr {
             inner: u32::to_be_bytes(ip),
         }
+    }
+}
+
+impl From<[u8; 4]> for Ipv4Addr {
+    /// Creates an `Ipv4Addr` from a four element byte array.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::Ipv4Addr;
+    ///
+    /// let addr = Ipv4Addr::from([13u8, 12u8, 11u8, 10u8]);
+    /// assert_eq!(Ipv4Addr::new(13, 12, 11, 10), addr);
+    /// ```
+    fn from(octets: [u8; 4]) -> Ipv4Addr {
+        Ipv4Addr::new(octets[0], octets[1], octets[2], octets[3])
+    }
+}
+
+impl From<[u8; 4]> for IpAddr {
+    /// Creates an `IpAddr::V4` from a four element byte array.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::{IpAddr, Ipv4Addr};
+    ///
+    /// let addr = IpAddr::from([13u8, 12u8, 11u8, 10u8]);
+    /// assert_eq!(IpAddr::V4(Ipv4Addr::new(13, 12, 11, 10)), addr);
+    /// ```
+    fn from(octets: [u8; 4]) -> IpAddr {
+        IpAddr::V4(Ipv4Addr::from(octets))
     }
 }
 
@@ -1403,6 +1294,115 @@ impl From<u128> for Ipv6Addr {
         Ipv6Addr {
             inner: u128::to_be_bytes(ip),
         }
+    }
+}
+
+impl From<[u8; 16]> for Ipv6Addr {
+    /// Creates an `Ipv6Addr` from a sixteen element byte array.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::Ipv6Addr;
+    ///
+    /// let addr = Ipv6Addr::from([
+    ///     25u8, 24u8, 23u8, 22u8, 21u8, 20u8, 19u8, 18u8,
+    ///     17u8, 16u8, 15u8, 14u8, 13u8, 12u8, 11u8, 10u8,
+    /// ]);
+    /// assert_eq!(
+    ///     Ipv6Addr::new(
+    ///         0x1918, 0x1716,
+    ///         0x1514, 0x1312,
+    ///         0x1110, 0x0f0e,
+    ///         0x0d0c, 0x0b0a
+    ///     ),
+    ///     addr
+    /// );
+    /// ```
+    fn from(octets: [u8; 16]) -> Ipv6Addr {
+        Ipv6Addr { inner: octets }
+    }
+}
+
+impl From<[u16; 8]> for Ipv6Addr {
+    /// Creates an `Ipv6Addr` from an eight element 16-bit array.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::Ipv6Addr;
+    ///
+    /// let addr = Ipv6Addr::from([
+    ///     525u16, 524u16, 523u16, 522u16,
+    ///     521u16, 520u16, 519u16, 518u16,
+    /// ]);
+    /// assert_eq!(
+    ///     Ipv6Addr::new(
+    ///         0x20d, 0x20c,
+    ///         0x20b, 0x20a,
+    ///         0x209, 0x208,
+    ///         0x207, 0x206
+    ///     ),
+    ///     addr
+    /// );
+    /// ```
+    fn from(segments: [u16; 8]) -> Ipv6Addr {
+        let [a, b, c, d, e, f, g, h] = segments;
+        Ipv6Addr::new(a, b, c, d, e, f, g, h)
+    }
+}
+
+impl From<[u8; 16]> for IpAddr {
+    /// Creates an `IpAddr::V6` from a sixteen element byte array.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::{IpAddr, Ipv6Addr};
+    ///
+    /// let addr = IpAddr::from([
+    ///     25u8, 24u8, 23u8, 22u8, 21u8, 20u8, 19u8, 18u8,
+    ///     17u8, 16u8, 15u8, 14u8, 13u8, 12u8, 11u8, 10u8,
+    /// ]);
+    /// assert_eq!(
+    ///     IpAddr::V6(Ipv6Addr::new(
+    ///         0x1918, 0x1716,
+    ///         0x1514, 0x1312,
+    ///         0x1110, 0x0f0e,
+    ///         0x0d0c, 0x0b0a
+    ///     )),
+    ///     addr
+    /// );
+    /// ```
+    fn from(octets: [u8; 16]) -> IpAddr {
+        IpAddr::V6(Ipv6Addr::from(octets))
+    }
+}
+
+impl From<[u16; 8]> for IpAddr {
+    /// Creates an `IpAddr::V6` from an eight element 16-bit array.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::{IpAddr, Ipv6Addr};
+    ///
+    /// let addr = IpAddr::from([
+    ///     525u16, 524u16, 523u16, 522u16,
+    ///     521u16, 520u16, 519u16, 518u16,
+    /// ]);
+    /// assert_eq!(
+    ///     IpAddr::V6(Ipv6Addr::new(
+    ///         0x20d, 0x20c,
+    ///         0x20b, 0x20a,
+    ///         0x209, 0x208,
+    ///         0x207, 0x206
+    ///     )),
+    ///     addr
+    /// );
+    /// ```
+    fn from(segments: [u16; 8]) -> IpAddr {
+        IpAddr::V6(Ipv6Addr::from(segments))
     }
 }
 
