@@ -12,9 +12,7 @@ use {IpAddr, Ipv4Addr, Ipv6Addr};
 /// as possibly some version-dependent additional information. See [`SocketAddrV4`]'s and
 /// [`SocketAddrV6`]'s respective documentation for more details.
 ///
-/// [IP address]: ../../no-std-net/enum.IpAddr.html
-/// [`SocketAddrV4`]: ../../no-std-net/struct.SocketAddrV4.html
-/// [`SocketAddrV6`]: ../../no-std-net/struct.SocketAddrV6.html
+/// [IP address]: IpAddr
 ///
 /// # Examples
 ///
@@ -38,7 +36,7 @@ pub enum SocketAddr {
 impl SocketAddr {
     /// Creates a new socket address from an [IP address] and a port number.
     ///
-    /// [IP address]: ../../no-std-net/enum.IpAddr.html
+    /// [IP address]: IpAddr
     ///
     /// # Examples
     ///
@@ -131,10 +129,8 @@ impl SocketAddr {
     /// Returns [`true`] if the [IP address] in this `SocketAddr` is an
     /// [IPv4 address], and [`false`] otherwise.
     ///
-    /// [`true`]: ../../std/primitive.bool.html
-    /// [`false`]: ../../std/primitive.bool.html
-    /// [IP address]: ../../no-std-net/enum.IpAddr.html
-    /// [IPv4 address]: ../../no-std-net/enum.IpAddr.html#variant.V4
+    /// [IP address]: IpAddr
+    /// [`IPv4` address]: IpAddr::V4
     ///
     /// # Examples
     ///
@@ -157,10 +153,8 @@ impl SocketAddr {
     /// Returns [`true`] if the [IP address] in this `SocketAddr` is an
     /// [IPv6 address], and [`false`] otherwise.
     ///
-    /// [`true`]: ../../std/primitive.bool.html
-    /// [`false`]: ../../std/primitive.bool.html
-    /// [IP address]: ../../no-std-net/enum.IpAddr.html
-    /// [IPv6 address]: ../../no-std-net/enum.IpAddr.html#variant.V6
+    /// [IP address]: IpAddr
+    /// [`IPv6` address]: IpAddr::V6
     ///
     /// # Examples
     ///
@@ -190,8 +184,7 @@ impl SocketAddr {
 /// See [`SocketAddr`] for a type encompassing both IPv4 and IPv6 socket addresses.
 ///
 /// [IETF RFC 793]: https://tools.ietf.org/html/rfc793
-/// [IPv4 address]: ../../no-std-net/struct.Ipv4Addr.html
-/// [`SocketAddr`]: ../../no-std-net/enum.SocketAddr.html
+/// [`IPv4` address]: Ipv4Addr
 ///
 /// # Examples
 ///
@@ -213,7 +206,7 @@ pub struct SocketAddrV4 {
 impl SocketAddrV4 {
     /// Creates a new socket address from an [IPv4 address] and a port number.
     ///
-    /// [IPv4 address]: ../../no-std-net/struct.Ipv4Addr.html
+    /// [`IPv4` address]: Ipv4Addr
     ///
     /// # Examples
     ///
@@ -297,8 +290,7 @@ impl SocketAddrV4 {
 /// See [`SocketAddr`] for a type encompassing both IPv4 and IPv6 socket addresses.
 ///
 /// [IETF RFC 2553, Section 3.3]: https://tools.ietf.org/html/rfc2553#section-3.3
-/// [IPv6 address]: ../../no-std-net/struct.Ipv6Addr.html
-/// [`SocketAddr`]: ../../no-std-net/enum.SocketAddr.html
+/// [`IPv6` address]: Ipv6Addr
 ///
 /// # Examples
 ///
@@ -327,7 +319,7 @@ impl SocketAddrV6 {
     /// parameters, see [IETF RFC 2553, Section 3.3].
     ///
     /// [IETF RFC 2553, Section 3.3]: https://tools.ietf.org/html/rfc2553#section-3.3
-    /// [IPv6 address]: ../../no-std-net/struct.Ipv6Addr.html
+    /// [`IPv6` address]: Ipv6Addr
     ///
     /// # Examples
     ///
@@ -568,18 +560,19 @@ impl ::fmt::Debug for SocketAddrV6 {
 /// Addresses returned by the operating system that are not IP addresses are
 /// silently ignored.
 ///
-/// [`FromStr`]: ../../std/str/trait.FromStr.html
-/// [`IpAddr`]: ../../no-std-net/enum.IpAddr.html
-/// [`Ipv4Addr`]: ../../no-std-net/struct.Ipv4Addr.html
-/// [`Ipv6Addr`]: ../../no-std-net/struct.Ipv6Addr.html
-/// [`SocketAddr`]: ../../no-std-net/enum.SocketAddr.html
-/// [`SocketAddrV4`]: ../../no-std-net/struct.SocketAddrV4.html
-/// [`SocketAddrV6`]: ../../no-std-net/struct.SocketAddrV6.html
-/// [`&str`]: ../../std/primitive.str.html
-/// [`TcpStream`]: ../../no-std-net/struct.TcpStream.html
-/// [`to_socket_addrs`]: #tymethod.to_socket_addrs
-/// [`UdpSocket`]: ../../no-std-net/struct.UdpSocket.html
-/// [`u16`]: ../../std/primitive.u16.html
+/// [`FromStr`]: core::str::FromStr
+/// [`&str`]: str
+#[cfg_attr(feature = "std", doc = "[`TcpStream`]: std::net::TcpStream")]
+#[cfg_attr(
+    not(feature = "std"),
+    doc = "[`TcpStream`]: https://doc.rust-lang.org/std/net/struct.TcpStream.html"
+)]
+/// [`to_socket_addrs`]: ToSocketAddrs::to_socket_addrs
+#[cfg_attr(feature = "std", doc = "[`UdpSocket`]: std::net::UdpSocket")]
+#[cfg_attr(
+    not(feature = "std"),
+    doc = "[`UdpSocket`]: https://doc.rust-lang.org/std/net/struct.UdpSocket.html"
+)]
 ///
 pub trait ToSocketAddrs {
     /// Returned iterator over socket addresses which this type may correspond to.

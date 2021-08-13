@@ -12,9 +12,6 @@ use core::cmp::Ordering;
 /// This enum can contain either an [`Ipv4Addr`] or an [`Ipv6Addr`], see their
 /// respective documentation for more details.
 ///
-/// [`Ipv4Addr`]: ../../no-std-net/struct.Ipv4Addr.html
-/// [`Ipv6Addr`]: ../../no-std-net/struct.Ipv6Addr.html
-///
 /// # Examples
 ///
 /// ```
@@ -45,14 +42,13 @@ pub enum IpAddr {
 /// See [`IpAddr`] for a type encompassing both IPv4 and IPv6 addresses.
 ///
 /// [IETF RFC 791]: https://tools.ietf.org/html/rfc791
-/// [`IpAddr`]: ../../no-std-net/enum.IpAddr.html
 ///
 /// # Textual representation
 ///
 /// `Ipv4Addr` provides a [`FromStr`] implementation. The four octets are in decimal
 /// notation, divided by `.` (this is called "dot-decimal notation").
 ///
-/// [`FromStr`]: https://doc.rust-lang.org/core/str/trait.FromStr.html
+/// [`FromStr`]: core::str::FromStr
 ///
 /// # Examples
 ///
@@ -68,7 +64,6 @@ pub struct Ipv4Addr {
     // Octets stored in transmit order.
     inner: [u8; 4],
 }
-// TODO: clean up all the links in the documentation!
 
 /// An IPv6 address.
 ///
@@ -78,7 +73,6 @@ pub struct Ipv4Addr {
 /// See [`IpAddr`] for a type encompassing both IPv4 and IPv6 addresses.
 ///
 /// [IETF RFC 4291]: https://tools.ietf.org/html/rfc4291
-/// [`IpAddr`]: ../../no-std-net/enum.IpAddr.html
 ///
 /// # Textual representation
 ///
@@ -87,7 +81,7 @@ pub struct Ipv4Addr {
 /// notation, and segments are separated by `:`. For more information, see
 /// [IETF RFC 5952].
 ///
-/// [`FromStr`]: https://doc.rust-lang.org/core/str/trait.FromStr.html
+/// [`FromStr`]: core::str::FromStr
 /// [IETF RFC 5952]: https://tools.ietf.org/html/rfc5952
 ///
 /// # Examples
@@ -120,12 +114,8 @@ pub enum Ipv6MulticastScope {
 impl IpAddr {
     /// Returns [`true`] for the special 'unspecified' address.
     ///
-    /// See the documentation for [`Ipv4Addr::is_unspecified`][IPv4] and
-    /// [`Ipv6Addr::is_unspecified`][IPv6] for more details.
-    ///
-    /// [IPv4]: ../../no-std-net/struct.Ipv4Addr.html#method.is_unspecified
-    /// [IPv6]: ../../no-std-net/struct.Ipv6Addr.html#method.is_unspecified
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
+    /// See the documentation for [`Ipv4Addr::is_unspecified()`] and
+    /// [`Ipv6Addr::is_unspecified()`] for more details.
     ///
     /// # Examples
     ///
@@ -144,12 +134,8 @@ impl IpAddr {
 
     /// Returns [`true`] if this is a loopback address.
     ///
-    /// See the documentation for [`Ipv4Addr::is_loopback`][IPv4] and
-    /// [`Ipv6Addr::is_loopback`][IPv6] for more details.
-    ///
-    /// [IPv4]: ../../no-std-net/struct.Ipv4Addr.html#method.is_loopback
-    /// [IPv6]: ../../no-std-net/struct.Ipv6Addr.html#method.is_loopback
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
+    /// See the documentation for [`Ipv4Addr::is_loopback()`] and
+    /// [`Ipv6Addr::is_loopback()`] for more details.
     ///
     /// # Examples
     ///
@@ -168,12 +154,8 @@ impl IpAddr {
 
     /// Returns [`true`] if the address appears to be globally routable.
     ///
-    /// See the documentation for [`Ipv4Addr::is_global`][IPv4] and
-    /// [`Ipv6Addr::is_global`][IPv6] for more details.
-    ///
-    /// [IPv4]: ../../no-std-net/struct.Ipv4Addr.html#method.is_global
-    /// [IPv6]: ../../no-std-net/struct.Ipv6Addr.html#method.is_global
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
+    /// See the documentation for [`Ipv4Addr::is_global()`] and
+    /// [`Ipv6Addr::is_global()`] for more details.
     ///
     /// # Examples
     ///
@@ -195,12 +177,8 @@ impl IpAddr {
 
     /// Returns [`true`] if this is a multicast address.
     ///
-    /// See the documentation for [`Ipv4Addr::is_multicast`][IPv4] and
-    /// [`Ipv6Addr::is_multicast`][IPv6] for more details.
-    ///
-    /// [IPv4]: ../../no-std-net/struct.Ipv4Addr.html#method.is_multicast
-    /// [IPv6]: ../../no-std-net/struct.Ipv6Addr.html#method.is_multicast
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
+    /// See the documentation for [`Ipv4Addr::is_multicast()`] and
+    /// [`Ipv6Addr::is_multicast()`] for more details.
     ///
     /// # Examples
     ///
@@ -219,12 +197,8 @@ impl IpAddr {
 
     /// Returns [`true`] if this address is in a range designated for documentation.
     ///
-    /// See the documentation for [`Ipv4Addr::is_documentation`][IPv4] and
-    /// [`Ipv6Addr::is_documentation`][IPv6] for more details.
-    ///
-    /// [IPv4]: ../../no-std-net/struct.Ipv4Addr.html#method.is_documentation
-    /// [IPv6]: ../../no-std-net/struct.Ipv6Addr.html#method.is_documentation
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
+    /// See the documentation for [`Ipv4Addr::is_documentation()`] and
+    /// [`Ipv6Addr::is_documentation()`] for more details.
     ///
     /// # Examples
     ///
@@ -244,11 +218,10 @@ impl IpAddr {
         }
     }
 
-    /// Returns [`true`] if this address is an [IPv4 address], and [`false`] otherwise.
+    /// Returns [`true`] if this address is an [`IPv4` address], and [`false`]
+    /// otherwise.
     ///
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
-    /// [`false`]: https://doc.rust-lang.org/std/primitive.bool.html
-    /// [IPv4 address]: #variant.V4
+    /// [`IPv4` address]: IpAddr::V4
     ///
     /// # Examples
     ///
@@ -268,11 +241,10 @@ impl IpAddr {
         }
     }
 
-    /// Returns [`true`] if this address is an [IPv6 address], and [`false`] otherwise.
+    /// Returns [`true`] if this address is an [`IPv6` address], and [`false`]
+    /// otherwise.
     ///
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
-    /// [`false`]: https://doc.rust-lang.org/std/primitive.bool.html
-    /// [IPv6 address]: #variant.V6
+    /// [`IPv6` address]: IpAddr::V6
     ///
     /// # Examples
     ///
@@ -543,13 +515,12 @@ impl Ipv4Addr {
         [self.inner[0], self.inner[1], self.inner[2], self.inner[3]]
     }
 
-    /// Returns [`true`] for the special 'unspecified' address (0.0.0.0).
+    /// Returns [`true`] for the special 'unspecified' address (`0.0.0.0`).
     ///
     /// This property is defined in _UNIX Network Programming, Second Edition_,
     /// W. Richard Stevens, p. 891; see also [ip7].
     ///
     /// [ip7]: http://man7.org/linux/man-pages/man7/ip.7.html
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
@@ -563,12 +534,11 @@ impl Ipv4Addr {
         self.inner[0] == 0 && self.inner[1] == 0 && self.inner[2] == 0 && self.inner[3] == 0
     }
 
-    /// Returns [`true`] if this is a loopback address (127.0.0.0/8).
+    /// Returns [`true`] if this is a loopback address (`127.0.0.0/8`).
     ///
     /// This property is defined by [IETF RFC 1122].
     ///
     /// [IETF RFC 1122]: https://tools.ietf.org/html/rfc1122
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
@@ -586,12 +556,11 @@ impl Ipv4Addr {
     ///
     /// The private address ranges are defined in [IETF RFC 1918] and include:
     ///
-    ///  - 10.0.0.0/8
-    ///  - 172.16.0.0/12
-    ///  - 192.168.0.0/16
+    ///  - `10.0.0.0/8`
+    ///  - `172.16.0.0/12`
+    ///  - `192.168.0.0/16`
     ///
     /// [IETF RFC 1918]: https://tools.ietf.org/html/rfc1918
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
@@ -615,12 +584,11 @@ impl Ipv4Addr {
         }
     }
 
-    /// Returns [`true`] if the address is link-local (169.254.0.0/16).
+    /// Returns [`true`] if the address is link-local (`169.254.0.0/16`).
     ///
     /// This property is defined by [IETF RFC 3927].
     ///
     /// [IETF RFC 3927]: https://tools.ietf.org/html/rfc3927
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
@@ -638,7 +606,7 @@ impl Ipv4Addr {
     /// Returns [`true`] if the address appears to be globally routable.
     /// See [iana-ipv4-special-registry][ipv4-sr].
     ///
-    /// The following return false:
+    /// The following return [`false`]:
     ///
     /// - private address (10.0.0.0/8, 172.16.0.0/12 and 192.168.0.0/16)
     /// - the loopback address (127.0.0.0/8)
@@ -648,7 +616,6 @@ impl Ipv4Addr {
     /// - the unspecified address (0.0.0.0)
     ///
     /// [ipv4-sr]: https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
@@ -678,7 +645,6 @@ impl Ipv4Addr {
     /// and is defined by [IETF RFC 5771].
     ///
     /// [IETF RFC 5771]: https://tools.ietf.org/html/rfc5771
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
@@ -698,7 +664,6 @@ impl Ipv4Addr {
     /// A broadcast address has all octets set to 255 as defined in [IETF RFC 919].
     ///
     /// [IETF RFC 919]: https://tools.ietf.org/html/rfc919
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
@@ -721,7 +686,6 @@ impl Ipv4Addr {
     /// - 203.0.113.0/24 (TEST-NET-3)
     ///
     /// [IETF RFC 5737]: https://tools.ietf.org/html/rfc5737
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
@@ -746,7 +710,7 @@ impl Ipv4Addr {
     ///
     /// a.b.c.d becomes ::a.b.c.d
     ///
-    /// [IPv6 address]: ../../no-std-net/struct.Ipv6Addr.html
+    /// [IPv6 address]: Ipv6Addr
     ///
     /// # Examples
     ///
@@ -773,7 +737,7 @@ impl Ipv4Addr {
     ///
     /// a.b.c.d becomes ::ffff:a.b.c.d
     ///
-    /// [IPv6 address]: ../../no-std-net/struct.Ipv6Addr.html
+    /// [IPv6 address]: Ipv6Addr
     ///
     /// # Examples
     ///
@@ -981,7 +945,6 @@ impl Ipv6Addr {
     /// This property is defined in [IETF RFC 4291].
     ///
     /// [IETF RFC 4291]: https://tools.ietf.org/html/rfc4291
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
@@ -1007,7 +970,6 @@ impl Ipv6Addr {
     /// This property is defined in [IETF RFC 4291].
     ///
     /// [IETF RFC 4291]: https://tools.ietf.org/html/rfc4291
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
@@ -1037,9 +999,6 @@ impl Ipv6Addr {
     /// - link-local, site-local, and unique local unicast addresses
     /// - interface-, link-, realm-, admin- and site-local multicast addresses
     ///
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
-    /// [`false`]: https://doc.rust-lang.org/std/primitive.bool.html
-    ///
     /// # Examples
     ///
     /// ```
@@ -1064,7 +1023,6 @@ impl Ipv6Addr {
     /// This property is defined in [IETF RFC 4193].
     ///
     /// [IETF RFC 4193]: https://tools.ietf.org/html/rfc4193
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
@@ -1086,7 +1044,6 @@ impl Ipv6Addr {
     /// This property is defined in [IETF RFC 4291].
     ///
     /// [IETF RFC 4291]: https://tools.ietf.org/html/rfc4291
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
@@ -1105,8 +1062,6 @@ impl Ipv6Addr {
 
     /// Returns [`true`] if this is a deprecated unicast site-local address
     /// (fec0::/10).
-    ///
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
@@ -1129,7 +1084,6 @@ impl Ipv6Addr {
     /// This property is defined in [IETF RFC 3849].
     ///
     /// [IETF RFC 3849]: https://tools.ietf.org/html/rfc3849
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
@@ -1156,8 +1110,6 @@ impl Ipv6Addr {
     /// - unique local addresses
     /// - the unspecified address
     /// - the address range reserved for documentation
-    ///
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
@@ -1215,7 +1167,6 @@ impl Ipv6Addr {
     /// This property is defined by [IETF RFC 4291].
     ///
     /// [IETF RFC 4291]: https://tools.ietf.org/html/rfc4291
-    /// [`true`]: https://doc.rust-lang.org/std/primitive.bool.html
     ///
     /// # Examples
     ///
@@ -1234,8 +1185,7 @@ impl Ipv6Addr {
     ///
     /// ::a.b.c.d and ::ffff:a.b.c.d become a.b.c.d
     ///
-    /// [IPv4 address]: ../../no-std-net/struct.Ipv4Addr.html
-    /// [`None`]: https://doc.rust-lang.org/core/option/enum.Option.html#variant.None
+    /// [IPv4 address]: Ipv4Addr
     ///
     /// # Examples
     ///
