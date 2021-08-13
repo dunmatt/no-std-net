@@ -2,6 +2,9 @@
 // They hold the copyright (http://rust-lang.org/COPYRIGHT) and whatever other rights, but this
 // crate is MIT licensed also, so it's all good.
 
+#[cfg(all(test, not(target_os = "emscripten")))]
+mod tests;
+
 use core::cmp::Ordering;
 use core::fmt::{self, Write};
 use core::hash;
@@ -707,20 +710,6 @@ impl hash::Hash for SocketAddrV6 {
 /// assert!(addrs_iter.next().is_none());
 /// ```
 ///
-/// Creating a [`SocketAddr`] iterator from a hostname:
-///
-/// ```no_run
-/// use no_std_net::{SocketAddr, ToSocketAddrs};
-///
-/// // assuming 'localhost' resolves to 127.0.0.1
-/// let mut addrs_iter = "localhost:443".to_socket_addrs().unwrap();
-/// assert_eq!(addrs_iter.next(), Some(SocketAddr::from(([127, 0, 0, 1], 443))));
-/// assert!(addrs_iter.next().is_none());
-///
-/// // assuming 'foo' does not resolve
-/// assert!("foo:443".to_socket_addrs().is_err());
-/// ```
-///
 /// Creating a [`SocketAddr`] iterator that yields multiple items:
 ///
 /// ```
@@ -736,33 +725,6 @@ impl hash::Hash for SocketAddrV6 {
 /// assert_eq!(Some(addr2), addrs_iter.next());
 /// assert!(addrs_iter.next().is_none());
 /// ```
-///
-/// Attempting to create a [`SocketAddr`] iterator from an improperly formatted
-/// socket address `&str` (missing the port):
-///
-/// ```
-/// use std::io;
-/// use no_std_net::ToSocketAddrs;
-///
-/// let err = "127.0.0.1".to_socket_addrs().unwrap_err();
-/// assert_eq!(err.kind(), io::ErrorKind::InvalidInput);
-/// ```
-///
-/// [`TcpStream::connect`] is an example of an function that utilizes
-/// `ToSocketAddrs` as a trait bound on its parameter in order to accept
-/// different types:
-///
-/// ```no_run
-/// use no_std_net::{TcpStream, Ipv4Addr};
-///
-/// let stream = TcpStream::connect(("127.0.0.1", 443));
-/// // or
-/// let stream = TcpStream::connect("127.0.0.1:443");
-/// // or
-/// let stream = TcpStream::connect((Ipv4Addr::new(127, 0, 0, 1), 443));
-/// ```
-///
-/// [`TcpStream::connect`]: core::net::TcpStream::connect
 pub trait ToSocketAddrs {
     /// Returned iterator over socket addresses which this type may correspond
     /// to.

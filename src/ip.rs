@@ -2,14 +2,15 @@
 // They hold the copyright (http://rust-lang.org/COPYRIGHT) and whatever other rights, but this
 // crate is MIT licensed also, so it's all good.
 
+// Tests for this module
+#[cfg(all(test, not(target_os = "emscripten")))]
+mod tests;
+
 use core::cmp::Ordering;
 use core::fmt::{self, Write};
 use core::hash;
 
 use super::helper::WriteHelper;
-
-// TODO: copy the parsers over from https://github.com/rust-lang/rust/blob/master/src/libstd/net/parser.rs
-// and update all the tests
 
 /// An IP address, either IPv4 or IPv6.
 ///
@@ -1828,5 +1829,3 @@ impl From<[u16; 8]> for IpAddr {
         IpAddr::V6(Ipv6Addr::from(segments))
     }
 }
-
-// TODO: add module tests here!
