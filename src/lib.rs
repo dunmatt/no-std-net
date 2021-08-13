@@ -48,14 +48,12 @@
     unused_qualifications,
     warnings
 )]
-#![forbid(unsafe_code)]
 #![cfg_attr(all(feature = "std", feature = "unstable_ip"), feature(ip))]
 
 #[cfg(not(feature = "std"))]
-use core::fmt;
-
-#[cfg(not(feature = "std"))]
 mod addr;
+#[cfg(not(feature = "std"))]
+mod helper;
 #[cfg(not(feature = "std"))]
 mod ip;
 #[cfg(not(feature = "std"))]

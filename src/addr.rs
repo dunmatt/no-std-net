@@ -3,12 +3,13 @@
 // crate is MIT licensed also, so it's all good.
 
 use core::cmp::Ordering;
-use core::fmt;
+use core::fmt::{self, Write};
 use core::hash;
 use core::iter;
 use core::option;
 use core::slice;
 
+use super::helper::WriteHelper;
 use super::{IpAddr, Ipv4Addr, Ipv6Addr};
 
 /// An internet socket address, either IPv4 or IPv6.
@@ -510,7 +511,26 @@ impl fmt::Debug for SocketAddr {
 
 impl fmt::Display for SocketAddrV4 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}:{}", self.ip(), self.port())
+        // Fast path: if there's no alignment stuff, write to the output buffer
+        // directly
+        if f.precision().is_none() && f.width().is_none() {
+            write!(f, "{}:{}", self.ip(), self.port())
+        } else {
+            const IPV4_SOCKET_BUF_LEN: usize = (3 * 4)  // the segments
+                + 3  // the separators
+                + 1 + 5; // the port
+            let mut buf = [0; IPV4_SOCKET_BUF_LEN];
+            let mut buf_slice = WriteHelper::new(&mut buf[..]);
+
+            // Unwrap is fine because writing to a sufficiently-sized
+            // buffer is infallible
+            write!(buf_slice, "{}:{}", self.ip(), self.port()).unwrap();
+            let len = IPV4_SOCKET_BUF_LEN - buf_slice.into_raw().len();
+
+            // This unsafe is OK because we know what is being written to the buffer
+            let buf = unsafe { core::str::from_utf8_unchecked(&buf[..len]) };
+            f.pad(buf)
+        }
     }
 }
 
@@ -522,7 +542,36 @@ impl fmt::Debug for SocketAddrV4 {
 
 impl fmt::Display for SocketAddrV6 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "[{}]:{}", self.ip(), self.port())
+        // Fast path: if there's no alignment stuff, write to the output
+        // buffer directly
+        if f.precision().is_none() && f.width().is_none() {
+            match self.scope_id() {
+                0 => write!(f, "[{}]:{}", self.ip(), self.port()),
+                scope_id => write!(f, "[{}%{}]:{}", self.ip(), scope_id, self.port()),
+            }
+        } else {
+            const IPV6_SOCKET_BUF_LEN: usize = (4 * 8)  // The address
+            + 7  // The colon separators
+            + 2  // The brackets
+            + 1 + 10 // The scope id
+            + 1 + 5; // The port
+
+            let mut buf = [0; IPV6_SOCKET_BUF_LEN];
+            let mut buf_slice = WriteHelper::new(&mut buf[..]);
+
+            match self.scope_id() {
+                0 => write!(buf_slice, "[{}]:{}", self.ip(), self.port()),
+                scope_id => write!(buf_slice, "[{}%{}]:{}", self.ip(), scope_id, self.port()),
+            }
+            // Unwrap is fine because writing to a sufficiently-sized
+            // buffer is infallible
+            .unwrap();
+            let len = IPV6_SOCKET_BUF_LEN - buf_slice.into_raw().len();
+
+            // This unsafe is OK because we know what is being written to the buffer
+            let buf = unsafe { core::str::from_utf8_unchecked(&buf[..len]) };
+            f.pad(buf)
+        }
     }
 }
 

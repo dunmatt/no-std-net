@@ -3,8 +3,10 @@
 // crate is MIT licensed also, so it's all good.
 
 use core::cmp::Ordering;
-use core::fmt;
+use core::fmt::{self, Write};
 use core::hash;
+
+use super::helper::WriteHelper;
 
 // TODO: copy the parsers over from https://github.com/rust-lang/rust/blob/master/src/libstd/net/parser.rs
 // and update all the tests
@@ -830,11 +832,31 @@ impl From<Ipv6Addr> for IpAddr {
 impl fmt::Display for Ipv4Addr {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         let octets = self.octets();
-        write!(
-            fmt,
-            "{}.{}.{}.{}",
-            octets[0], octets[1], octets[2], octets[3]
-        )
+        // Fast Path: if there's no alignment stuff, write directly to the buffer
+        if fmt.precision().is_none() && fmt.width().is_none() {
+            write!(
+                fmt,
+                "{}.{}.{}.{}",
+                octets[0], octets[1], octets[2], octets[3]
+            )
+        } else {
+            const IPV4_BUF_LEN: usize = 15; // Long enough for the longest possible IPv4 address
+            let mut buf = [0u8; IPV4_BUF_LEN];
+            let mut buf_slice = WriteHelper::new(&mut buf[..]);
+
+            // Note: The call to write should never fail, hence the unwrap
+            write!(
+                buf_slice,
+                "{}.{}.{}.{}",
+                octets[0], octets[1], octets[2], octets[3]
+            )
+            .unwrap();
+            let len = IPV4_BUF_LEN - buf_slice.into_raw().len();
+
+            // This unsafe is OK because we know what is being written to the buffer
+            let buf = unsafe { core::str::from_utf8_unchecked(&buf[..len]) };
+            fmt.pad(buf)
+        }
     }
 }
 
@@ -1474,84 +1496,98 @@ impl Ipv6Addr {
     }
 }
 
+/// Write an Ipv6Addr, conforming to the canonical style described by
+/// [RFC 5952](https://tools.ietf.org/html/rfc5952).
 impl fmt::Display for Ipv6Addr {
-    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self.segments() {
-            // We need special cases for :: and ::1, otherwise they're formatted
-            // as ::0.0.0.[01]
-            [0, 0, 0, 0, 0, 0, 0, 0] => write!(fmt, "::"),
-            [0, 0, 0, 0, 0, 0, 0, 1] => write!(fmt, "::1"),
-            // Ipv4 Compatible address
-            [0, 0, 0, 0, 0, 0, g, h] => write!(
-                fmt,
-                "::{}.{}.{}.{}",
-                (g >> 8) as u8,
-                g as u8,
-                (h >> 8) as u8,
-                h as u8
-            ),
-            // Ipv4-Mapped address
-            [0, 0, 0, 0, 0, 0xffff, g, h] => write!(
-                fmt,
-                "::ffff:{}.{}.{}.{}",
-                (g >> 8) as u8,
-                g as u8,
-                (h >> 8) as u8,
-                h as u8
-            ),
-            _ => {
-                fn find_zero_slice(segments: &[u16; 8]) -> (usize, usize) {
-                    let mut longest_span_len = 0;
-                    let mut longest_span_at = 0;
-                    let mut cur_span_len = 0;
-                    let mut cur_span_at = 0;
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // If there are no alignment requirements, write out the IP address to
+        // f. Otherwise, write it to a local buffer, then use f.pad.
+        if f.precision().is_none() && f.width().is_none() {
+            let segments = self.segments();
 
-                    for i in 0..8 {
-                        if segments[i] == 0 {
-                            if cur_span_len == 0 {
-                                cur_span_at = i;
+            // Special case for :: and ::1; otherwise they get written with the
+            // IPv4 formatter
+            if self.is_unspecified() {
+                f.write_str("::")
+            } else if self.is_loopback() {
+                f.write_str("::1")
+            } else if let Some(ipv4) = self.to_ipv4() {
+                match segments[5] {
+                    // IPv4 Compatible address
+                    0 => write!(f, "::{}", ipv4),
+                    // IPv4 Mapped address
+                    0xffff => write!(f, "::ffff:{}", ipv4),
+                    _ => unreachable!(),
+                }
+            } else {
+                #[derive(Copy, Clone, Default)]
+                struct Span {
+                    start: usize,
+                    len: usize,
+                }
+
+                // Find the inner 0 span
+                let zeroes = {
+                    let mut longest = Span::default();
+                    let mut current = Span::default();
+
+                    for (i, &segment) in segments.iter().enumerate() {
+                        if segment == 0 {
+                            if current.len == 0 {
+                                current.start = i;
                             }
 
-                            cur_span_len += 1;
+                            current.len += 1;
 
-                            if cur_span_len > longest_span_len {
-                                longest_span_len = cur_span_len;
-                                longest_span_at = cur_span_at;
+                            if current.len > longest.len {
+                                longest = current;
                             }
                         } else {
-                            cur_span_len = 0;
-                            cur_span_at = 0;
+                            current = Span::default();
                         }
                     }
 
-                    (longest_span_at, longest_span_len)
+                    longest
+                };
+
+                /// Write a colon-separated part of the address
+                #[inline]
+                fn fmt_subslice(f: &mut fmt::Formatter<'_>, chunk: &[u16]) -> fmt::Result {
+                    if let Some((first, tail)) = chunk.split_first() {
+                        write!(f, "{:x}", first)?;
+                        for segment in tail {
+                            f.write_char(':')?;
+                            write!(f, "{:x}", segment)?;
+                        }
+                    }
+                    Ok(())
                 }
 
-                let (zeros_at, zeros_len) = find_zero_slice(&self.segments());
-
-                if zeros_len > 1 {
-                    fn fmt_subslice(segments: &[u16], fmt: &mut ::fmt::Formatter) -> ::fmt::Result {
-                        if !segments.is_empty() {
-                            write!(fmt, "{:x}", segments[0])?;
-                            for &seg in &segments[1..] {
-                                write!(fmt, ":{:x}", seg)?;
-                            }
-                        }
-                        Ok(())
-                    }
-
-                    fmt_subslice(&self.segments()[..zeros_at], fmt)?;
-                    fmt.write_str("::")?;
-                    fmt_subslice(&self.segments()[zeros_at + zeros_len..], fmt)
+                if zeroes.len > 1 {
+                    fmt_subslice(f, &segments[..zeroes.start])?;
+                    f.write_str("::")?;
+                    fmt_subslice(f, &segments[zeroes.start + zeroes.len..])
                 } else {
-                    let &[a, b, c, d, e, f, g, h] = &self.segments();
-                    write!(
-                        fmt,
-                        "{:x}:{:x}:{:x}:{:x}:{:x}:{:x}:{:x}:{:x}",
-                        a, b, c, d, e, f, g, h
-                    )
+                    fmt_subslice(f, &segments)
                 }
             }
+        } else {
+            // Slow path: write the address to a local buffer, the use f.pad.
+            // Defined recursively by using the fast path to write to the
+            // buffer.
+
+            // This is the largest possible size of an IPv6 address
+            const IPV6_BUF_LEN: usize = (4 * 8) + 7;
+            let mut buf = [0u8; IPV6_BUF_LEN];
+            let mut buf_slice = WriteHelper::new(&mut buf[..]);
+
+            // Note: This call to write should never fail, so unwrap is okay.
+            write!(buf_slice, "{}", self).unwrap();
+            let len = IPV6_BUF_LEN - buf_slice.into_raw().len();
+
+            // This is safe because we know exactly what can be in this buffer
+            let buf = unsafe { core::str::from_utf8_unchecked(&buf[..len]) };
+            f.pad(buf)
         }
     }
 }
