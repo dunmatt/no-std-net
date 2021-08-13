@@ -40,7 +40,7 @@ pub enum SocketAddr {
 
 /// An IPv4 socket address.
 ///
-/// IPv4 socket addresses consist of an [IPv4 address] and a 16-bit port number, as
+/// IPv4 socket addresses consist of an [`IPv4` address] and a 16-bit port number, as
 /// stated in [IETF RFC 793].
 ///
 /// See [`SocketAddr`] for a type encompassing both IPv4 and IPv6 socket addresses.
@@ -67,7 +67,7 @@ pub struct SocketAddrV4 {
 
 /// An IPv6 socket address.
 ///
-/// IPv6 socket addresses consist of an [Ipv6 address], a 16-bit port number, as well
+/// IPv6 socket addresses consist of an [`IPv6` address], a 16-bit port number, as well
 /// as fields containing the traffic class, the flow label, and a scope identifier
 /// (see [IETF RFC 2553, Section 3.3] for more details).
 ///
@@ -189,7 +189,7 @@ impl SocketAddr {
     }
 
     /// Returns [`true`] if the [IP address] in this `SocketAddr` is an
-    /// [IPv4 address], and [`false`] otherwise.
+    /// [`IPv4` address], and [`false`] otherwise.
     ///
     /// [IP address]: IpAddr
     /// [`IPv4` address]: IpAddr::V4
@@ -199,21 +199,16 @@ impl SocketAddr {
     /// ```
     /// use no_std_net::{IpAddr, Ipv4Addr, SocketAddr};
     ///
-    /// fn main() {
-    ///     let socket = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 8080);
-    ///     assert_eq!(socket.is_ipv4(), true);
-    ///     assert_eq!(socket.is_ipv6(), false);
-    /// }
+    /// let socket = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 8080);
+    /// assert_eq!(socket.is_ipv4(), true);
+    /// assert_eq!(socket.is_ipv6(), false);
     /// ```
     pub const fn is_ipv4(&self) -> bool {
-        match *self {
-            SocketAddr::V4(_) => true,
-            SocketAddr::V6(_) => false,
-        }
+        matches!(*self, SocketAddr::V4(_))
     }
 
     /// Returns [`true`] if the [IP address] in this `SocketAddr` is an
-    /// [IPv6 address], and [`false`] otherwise.
+    /// [`IPv6` address], and [`false`] otherwise.
     ///
     /// [IP address]: IpAddr
     /// [`IPv6` address]: IpAddr::V6
@@ -223,23 +218,17 @@ impl SocketAddr {
     /// ```
     /// use no_std_net::{IpAddr, Ipv6Addr, SocketAddr};
     ///
-    /// fn main() {
-    ///     let socket = SocketAddr::new(
-    ///                      IpAddr::V6(Ipv6Addr::new(0, 0, 0, 0, 0, 65535, 0, 1)), 8080);
-    ///     assert_eq!(socket.is_ipv4(), false);
-    ///     assert_eq!(socket.is_ipv6(), true);
-    /// }
+    /// let socket = SocketAddr::new(IpAddr::V6(Ipv6Addr::new(0, 0, 0, 0, 0, 65535, 0, 1)), 8080);
+    /// assert_eq!(socket.is_ipv4(), false);
+    /// assert_eq!(socket.is_ipv6(), true);
     /// ```
     pub const fn is_ipv6(&self) -> bool {
-        match *self {
-            SocketAddr::V4(_) => false,
-            SocketAddr::V6(_) => true,
-        }
+        matches!(*self, SocketAddr::V6(_))
     }
 }
 
 impl SocketAddrV4 {
-    /// Creates a new socket address from an [IPv4 address] and a port number.
+    /// Creates a new socket address from an [`IPv4` address] and a port number.
     ///
     /// [`IPv4` address]: Ipv4Addr
     ///
@@ -317,7 +306,7 @@ impl SocketAddrV4 {
 }
 
 impl SocketAddrV6 {
-    /// Creates a new socket address from an [IPv6 address], a 16-bit port number,
+    /// Creates a new socket address from an [`IPv6` address], a 16-bit port number,
     /// and the `flowinfo` and `scope_id` fields.
     ///
     /// For more information on the meaning and layout of the `flowinfo` and `scope_id`
@@ -426,9 +415,7 @@ impl SocketAddrV6 {
 
     /// Changes the flow information associated with this socket address.
     ///
-    /// See the [`flowinfo`] method's documentation for more details.
-    ///
-    /// [`flowinfo`]: #method.flowinfo
+    /// See [`SocketAddrV6::flowinfo`]'s documentation for more details.
     ///
     /// # Examples
     ///
@@ -462,11 +449,9 @@ impl SocketAddrV6 {
         self.scope_id
     }
 
-    /// Change the scope ID associated with this socket address.
+    /// Changes the scope ID associated with this socket address.
     ///
-    /// See the [`scope_id`] method's documentation for more details.
-    ///
-    /// [`scope_id`]: #method.scope_id
+    /// See [`SocketAddrV6::scope_id`]'s documentation for more details.
     ///
     /// # Examples
     ///
@@ -617,7 +602,7 @@ impl hash::Hash for SocketAddrV6 {
 /// [`SocketAddr`] values.
 ///
 /// This trait is used for generic address resolution when constructing network
-/// objects.  By default it is implemented for the following types:
+/// objects. By default it is implemented for the following types:
 ///
 ///  * [`SocketAddr`]: [`to_socket_addrs`] is the identity function.
 ///
@@ -625,9 +610,9 @@ impl hash::Hash for SocketAddrV6 {
 ///    `(`[`Ipv4Addr`]`, `[`u16`]`)`, `(`[`Ipv6Addr`]`, `[`u16`]`)`:
 ///    [`to_socket_addrs`] constructs a [`SocketAddr`] trivially.
 ///
-///  * `(`[`&str`]`, `[`u16`]`)`: the string should be either a string representation
+///  * `(`[`&str`]`, `[`u16`]`)`: [`&str`] should be either a string representation
 ///    of an [`IpAddr`] address as expected by [`FromStr`] implementation or a host
-///    name.
+///    name. [`u16`] is the port number.
 ///
 ///  * [`&str`]: the string should be either a string representation of a
 ///    [`SocketAddr`] as expected by its [`FromStr`] implementation or a string like
@@ -639,7 +624,7 @@ impl hash::Hash for SocketAddrV6 {
 /// the other: for simple uses a string like `"localhost:12345"` is much nicer
 /// than manual construction of the corresponding [`SocketAddr`], but sometimes
 /// [`SocketAddr`] value is *the* main source of the address, and converting it to
-/// some other type (e.g. a string) just for it to be converted back to
+/// some other type (e.g., a string) just for it to be converted back to
 /// [`SocketAddr`] in constructor methods is pointless.
 ///
 /// Addresses returned by the operating system that are not IP addresses are
@@ -659,8 +644,79 @@ impl hash::Hash for SocketAddrV6 {
     doc = "[`UdpSocket`]: https://doc.rust-lang.org/std/net/struct.UdpSocket.html"
 )]
 ///
+/// # Examples
+///
+/// Creating a [`SocketAddr`] iterator that yields one item:
+///
+/// ```
+/// use no_std_net::{ToSocketAddrs, SocketAddr};
+///
+/// let addr = SocketAddr::from(([127, 0, 0, 1], 443));
+/// let mut addrs_iter = addr.to_socket_addrs().unwrap();
+///
+/// assert_eq!(Some(addr), addrs_iter.next());
+/// assert!(addrs_iter.next().is_none());
+/// ```
+///
+/// Creating a [`SocketAddr`] iterator from a hostname:
+///
+/// ```no_run
+/// use no_std_net::{SocketAddr, ToSocketAddrs};
+///
+/// // assuming 'localhost' resolves to 127.0.0.1
+/// let mut addrs_iter = "localhost:443".to_socket_addrs().unwrap();
+/// assert_eq!(addrs_iter.next(), Some(SocketAddr::from(([127, 0, 0, 1], 443))));
+/// assert!(addrs_iter.next().is_none());
+///
+/// // assuming 'foo' does not resolve
+/// assert!("foo:443".to_socket_addrs().is_err());
+/// ```
+///
+/// Creating a [`SocketAddr`] iterator that yields multiple items:
+///
+/// ```
+/// use no_std_net::{SocketAddr, ToSocketAddrs};
+///
+/// let addr1 = SocketAddr::from(([0, 0, 0, 0], 80));
+/// let addr2 = SocketAddr::from(([127, 0, 0, 1], 443));
+/// let addrs = vec![addr1, addr2];
+///
+/// let mut addrs_iter = (&addrs[..]).to_socket_addrs().unwrap();
+///
+/// assert_eq!(Some(addr1), addrs_iter.next());
+/// assert_eq!(Some(addr2), addrs_iter.next());
+/// assert!(addrs_iter.next().is_none());
+/// ```
+///
+/// Attempting to create a [`SocketAddr`] iterator from an improperly formatted
+/// socket address `&str` (missing the port):
+///
+/// ```
+/// use std::io;
+/// use no_std_net::ToSocketAddrs;
+///
+/// let err = "127.0.0.1".to_socket_addrs().unwrap_err();
+/// assert_eq!(err.kind(), io::ErrorKind::InvalidInput);
+/// ```
+///
+/// [`TcpStream::connect`] is an example of an function that utilizes
+/// `ToSocketAddrs` as a trait bound on its parameter in order to accept
+/// different types:
+///
+/// ```no_run
+/// use no_std_net::{TcpStream, Ipv4Addr};
+///
+/// let stream = TcpStream::connect(("127.0.0.1", 443));
+/// // or
+/// let stream = TcpStream::connect("127.0.0.1:443");
+/// // or
+/// let stream = TcpStream::connect((Ipv4Addr::new(127, 0, 0, 1), 443));
+/// ```
+///
+/// [`TcpStream::connect`]: core::net::TcpStream::connect
 pub trait ToSocketAddrs {
-    /// Returned iterator over socket addresses which this type may correspond to.
+    /// Returned iterator over socket addresses which this type may correspond
+    /// to.
     type Iter: Iterator<Item = SocketAddr>;
 
     /// Converts this object to an iterator of resolved `SocketAddr`s.
@@ -668,11 +724,13 @@ pub trait ToSocketAddrs {
     /// The returned iterator may not actually yield any values depending on the
     /// outcome of any resolution performed.
     ///
-    /// Note that this function may block the current thread while resolution is performed.
+    /// Note that this function may block the current thread while resolution is
+    /// performed.
     fn to_socket_addrs(&self) -> Result<Self::Iter, ToSocketAddrError>;
 }
 
 /// This is a placeholder for the core::result::Result type parameter, it is unused.
+#[derive(Debug)]
 pub enum ToSocketAddrError {}
 
 impl ToSocketAddrs for SocketAddr {
