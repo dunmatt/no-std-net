@@ -3,6 +3,8 @@
 // crate is MIT licensed also, so it's all good.
 
 use core::cmp::Ordering;
+use core::fmt;
+use core::hash;
 
 // TODO: copy the parsers over from https://github.com/rust-lang/rust/blob/master/src/libstd/net/parser.rs
 // and update all the tests
@@ -26,7 +28,7 @@ use core::cmp::Ordering;
 /// assert_eq!(localhost_v4.is_ipv6(), false);
 /// assert_eq!(localhost_v4.is_ipv4(), true);
 /// ```
-#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash, PartialOrd, Ord)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, PartialOrd, Ord)]
 pub enum IpAddr {
     /// An IPv4 address.
     V4(Ipv4Addr),
@@ -59,7 +61,7 @@ pub enum IpAddr {
 /// assert_eq!("127.0.0.1".parse(), Ok(localhost));
 /// assert_eq!(localhost.is_loopback(), true);
 /// ```
-#[derive(Clone, Copy, Eq, PartialEq, Hash, PartialOrd, Ord)]
+#[derive(Copy)]
 pub struct Ipv4Addr {
     // Octets stored in transmit order.
     inner: [u8; 4],
@@ -93,7 +95,7 @@ pub struct Ipv4Addr {
 /// assert_eq!("::1".parse(), Ok(localhost));
 /// assert_eq!(localhost.is_loopback(), true);
 /// ```
-#[derive(Clone, Copy, Eq, PartialEq, Hash, PartialOrd, Ord)]
+#[derive(Copy)]
 pub struct Ipv6Addr {
     // Octets stored in transmit order.
     inner: [u8; 16],
@@ -581,12 +583,18 @@ impl Ipv4Addr {
     }
 }
 
-impl ::fmt::Display for IpAddr {
-    fn fmt(&self, fmt: &mut ::fmt::Formatter) -> ::fmt::Result {
-        match *self {
-            IpAddr::V4(ref a) => a.fmt(fmt),
-            IpAddr::V6(ref a) => a.fmt(fmt),
+impl fmt::Display for IpAddr {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            IpAddr::V4(ip) => ip.fmt(fmt),
+            IpAddr::V6(ip) => ip.fmt(fmt),
         }
+    }
+}
+
+impl fmt::Debug for IpAddr {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt::Display::fmt(self, fmt)
     }
 }
 
@@ -605,6 +613,7 @@ impl From<Ipv4Addr> for IpAddr {
     ///     IpAddr::from(addr)
     /// )
     /// ```
+    #[inline]
     fn from(ipv4: Ipv4Addr) -> IpAddr {
         IpAddr::V4(ipv4)
     }
@@ -625,74 +634,139 @@ impl From<Ipv6Addr> for IpAddr {
     ///     IpAddr::from(addr)
     /// );
     /// ```
+    #[inline]
     fn from(ipv6: Ipv6Addr) -> IpAddr {
         IpAddr::V6(ipv6)
     }
 }
 
-impl ::fmt::Display for Ipv4Addr {
-    fn fmt(&self, fmt: &mut ::fmt::Formatter) -> ::fmt::Result {
+impl fmt::Display for Ipv4Addr {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let octets = self.octets();
         write!(
             fmt,
             "{}.{}.{}.{}",
-            self.inner[0], self.inner[1], self.inner[2], self.inner[3]
+            octets[0], octets[1], octets[2], octets[3]
         )
     }
 }
 
-impl ::fmt::Debug for Ipv4Addr {
-    fn fmt(&self, fmt: &mut ::fmt::Formatter) -> ::fmt::Result {
-        ::fmt::Display::fmt(self, fmt)
+impl fmt::Debug for Ipv4Addr {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt::Display::fmt(self, fmt)
+    }
+}
+
+impl Clone for Ipv4Addr {
+    #[inline]
+    fn clone(&self) -> Ipv4Addr {
+        *self
+    }
+}
+
+impl PartialEq for Ipv4Addr {
+    #[inline]
+    fn eq(&self, other: &Ipv4Addr) -> bool {
+        self.inner == other.inner
     }
 }
 
 impl PartialEq<Ipv4Addr> for IpAddr {
+    #[inline]
     fn eq(&self, other: &Ipv4Addr) -> bool {
-        match *self {
-            IpAddr::V4(ref v4) => v4 == other,
+        match self {
+            IpAddr::V4(v4) => v4 == other,
             IpAddr::V6(_) => false,
         }
     }
 }
 
 impl PartialEq<IpAddr> for Ipv4Addr {
+    #[inline]
     fn eq(&self, other: &IpAddr) -> bool {
-        match *other {
-            IpAddr::V4(ref v4) => self == v4,
+        match other {
+            IpAddr::V4(v4) => self == v4,
             IpAddr::V6(_) => false,
         }
     }
 }
 
-impl PartialOrd<Ipv4Addr> for IpAddr {
+impl Eq for Ipv4Addr {}
+
+impl hash::Hash for Ipv4Addr {
+    #[inline]
+    fn hash<H: hash::Hasher>(&self, s: &mut H) {
+        self.inner.hash(s)
+    }
+}
+
+impl PartialOrd for Ipv4Addr {
+    #[inline]
     fn partial_cmp(&self, other: &Ipv4Addr) -> Option<Ordering> {
-        match *self {
-            IpAddr::V4(ref v4) => v4.partial_cmp(other),
+        Some(self.cmp(other))
+    }
+}
+
+impl PartialOrd<Ipv4Addr> for IpAddr {
+    #[inline]
+    fn partial_cmp(&self, other: &Ipv4Addr) -> Option<Ordering> {
+        match self {
+            IpAddr::V4(v4) => v4.partial_cmp(other),
             IpAddr::V6(_) => Some(Ordering::Greater),
         }
     }
 }
 
 impl PartialOrd<IpAddr> for Ipv4Addr {
+    #[inline]
     fn partial_cmp(&self, other: &IpAddr) -> Option<Ordering> {
-        match *other {
-            IpAddr::V4(ref v4) => self.partial_cmp(v4),
+        match other {
+            IpAddr::V4(v4) => self.partial_cmp(v4),
             IpAddr::V6(_) => Some(Ordering::Less),
         }
     }
 }
 
+impl Ord for Ipv4Addr {
+    #[inline]
+    fn cmp(&self, other: &Ipv4Addr) -> Ordering {
+        // Compare as native endian
+        u32::from_be_bytes(self.inner).cmp(&u32::from_be_bytes(other.inner))
+    }
+}
+
 impl From<Ipv4Addr> for u32 {
+    /// Converts an `Ipv4Addr` into a host byte order `u32`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::Ipv4Addr;
+    ///
+    /// let addr = Ipv4Addr::new(0xca, 0xfe, 0xba, 0xbe);
+    /// assert_eq!(0xcafebabe, u32::from(addr));
+    /// ```
+    #[inline]
     fn from(ip: Ipv4Addr) -> u32 {
-        u32::from_be_bytes(ip.inner)
+        let ip = ip.octets();
+        u32::from_be_bytes(ip)
     }
 }
 
 impl From<u32> for Ipv4Addr {
+    /// Converts a host byte order `u32` into an `Ipv4Addr`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use no_std_net::Ipv4Addr;
+    ///
+    /// let addr = Ipv4Addr::from(0xcafebabe);
+    /// assert_eq!(Ipv4Addr::new(0xca, 0xfe, 0xba, 0xbe), addr);
+    /// ```
+    #[inline]
     fn from(ip: u32) -> Ipv4Addr {
-        Ipv4Addr {
-            inner: u32::to_be_bytes(ip),
-        }
+        Ipv4Addr::from(ip.to_be_bytes())
     }
 }
 
@@ -707,6 +781,7 @@ impl From<[u8; 4]> for Ipv4Addr {
     /// let addr = Ipv4Addr::from([13u8, 12u8, 11u8, 10u8]);
     /// assert_eq!(Ipv4Addr::new(13, 12, 11, 10), addr);
     /// ```
+    #[inline]
     fn from(octets: [u8; 4]) -> Ipv4Addr {
         Ipv4Addr::new(octets[0], octets[1], octets[2], octets[3])
     }
@@ -723,6 +798,7 @@ impl From<[u8; 4]> for IpAddr {
     /// let addr = IpAddr::from([13u8, 12u8, 11u8, 10u8]);
     /// assert_eq!(IpAddr::V4(Ipv4Addr::new(13, 12, 11, 10)), addr);
     /// ```
+    #[inline]
     fn from(octets: [u8; 4]) -> IpAddr {
         IpAddr::V4(Ipv4Addr::from(octets))
     }
@@ -731,7 +807,7 @@ impl From<[u8; 4]> for IpAddr {
 impl Ipv6Addr {
     /// Creates a new IPv6 address from eight 16-bit segments.
     ///
-    /// The result will represent the IP address a:b:c:d:e:f:g:h.
+    /// The result will represent the IP address `a:b:c:d:e:f:g:h`.
     ///
     /// # Examples
     ///
@@ -1162,8 +1238,8 @@ impl Ipv6Addr {
     }
 }
 
-impl ::fmt::Display for Ipv6Addr {
-    fn fmt(&self, fmt: &mut ::fmt::Formatter) -> ::fmt::Result {
+impl fmt::Display for Ipv6Addr {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self.segments() {
             // We need special cases for :: and ::1, otherwise they're formatted
             // as ::0.0.0.[01]
@@ -1244,48 +1320,88 @@ impl ::fmt::Display for Ipv6Addr {
     }
 }
 
-impl ::fmt::Debug for Ipv6Addr {
-    fn fmt(&self, fmt: &mut ::fmt::Formatter) -> ::fmt::Result {
-        ::fmt::Display::fmt(self, fmt)
+impl fmt::Debug for Ipv6Addr {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt::Display::fmt(self, fmt)
+    }
+}
+
+impl Clone for Ipv6Addr {
+    #[inline]
+    fn clone(&self) -> Ipv6Addr {
+        *self
+    }
+}
+
+impl PartialEq for Ipv6Addr {
+    #[inline]
+    fn eq(&self, other: &Ipv6Addr) -> bool {
+        self.inner == other.inner
     }
 }
 
 impl PartialEq<IpAddr> for Ipv6Addr {
+    #[inline]
     fn eq(&self, other: &IpAddr) -> bool {
-        match *other {
+        match other {
             IpAddr::V4(_) => false,
-            IpAddr::V6(ref v6) => self == v6,
+            IpAddr::V6(v6) => self == v6,
         }
     }
 }
 
 impl PartialEq<Ipv6Addr> for IpAddr {
+    #[inline]
     fn eq(&self, other: &Ipv6Addr) -> bool {
-        match *self {
+        match self {
             IpAddr::V4(_) => false,
-            IpAddr::V6(ref v6) => v6 == other,
+            IpAddr::V6(v6) => v6 == other,
         }
     }
 }
 
-impl PartialOrd<Ipv6Addr> for IpAddr {
+impl Eq for Ipv6Addr {}
+
+impl hash::Hash for Ipv6Addr {
+    #[inline]
+    fn hash<H: hash::Hasher>(&self, s: &mut H) {
+        self.inner.hash(s)
+    }
+}
+
+impl PartialOrd for Ipv6Addr {
+    #[inline]
     fn partial_cmp(&self, other: &Ipv6Addr) -> Option<Ordering> {
-        match *self {
+        Some(self.cmp(other))
+    }
+}
+
+impl PartialOrd<Ipv6Addr> for IpAddr {
+    #[inline]
+    fn partial_cmp(&self, other: &Ipv6Addr) -> Option<Ordering> {
+        match self {
             IpAddr::V4(_) => Some(Ordering::Less),
-            IpAddr::V6(ref v6) => v6.partial_cmp(other),
+            IpAddr::V6(v6) => v6.partial_cmp(other),
         }
     }
 }
 
 impl PartialOrd<IpAddr> for Ipv6Addr {
+    #[inline]
     fn partial_cmp(&self, other: &IpAddr) -> Option<Ordering> {
-        match *other {
+        match other {
             IpAddr::V4(_) => Some(Ordering::Greater),
-            IpAddr::V6(ref v6) => self.partial_cmp(v6),
+            IpAddr::V6(v6) => self.partial_cmp(v6),
         }
     }
 }
 
+impl Ord for Ipv6Addr {
+    #[inline]
+    fn cmp(&self, other: &Ipv6Addr) -> Ordering {
+        self.segments().cmp(&other.segments())
+    }
+}
 impl From<Ipv6Addr> for u128 {
     /// Convert an `Ipv6Addr` into a host byte order `u128`.
     ///
@@ -1300,11 +1416,12 @@ impl From<Ipv6Addr> for u128 {
     /// );
     /// assert_eq!(0x102030405060708090A0B0C0D0E0F00D_u128, u128::from(addr));
     /// ```
+    #[inline]
     fn from(ip: Ipv6Addr) -> u128 {
-        u128::from_be_bytes(ip.inner)
+        let ip = ip.octets();
+        u128::from_be_bytes(ip)
     }
 }
-
 impl From<u128> for Ipv6Addr {
     /// Convert a host byte order `u128` into an `Ipv6Addr`.
     ///
@@ -1321,10 +1438,9 @@ impl From<u128> for Ipv6Addr {
     ///     ),
     ///     addr);
     /// ```
+    #[inline]
     fn from(ip: u128) -> Ipv6Addr {
-        Ipv6Addr {
-            inner: u128::to_be_bytes(ip),
-        }
+        Ipv6Addr::from(ip.to_be_bytes())
     }
 }
 
@@ -1350,6 +1466,7 @@ impl From<[u8; 16]> for Ipv6Addr {
     ///     addr
     /// );
     /// ```
+    #[inline]
     fn from(octets: [u8; 16]) -> Ipv6Addr {
         Ipv6Addr { inner: octets }
     }
@@ -1377,6 +1494,7 @@ impl From<[u16; 8]> for Ipv6Addr {
     ///     addr
     /// );
     /// ```
+    #[inline]
     fn from(segments: [u16; 8]) -> Ipv6Addr {
         let [a, b, c, d, e, f, g, h] = segments;
         Ipv6Addr::new(a, b, c, d, e, f, g, h)
@@ -1405,6 +1523,7 @@ impl From<[u8; 16]> for IpAddr {
     ///     addr
     /// );
     /// ```
+    #[inline]
     fn from(octets: [u8; 16]) -> IpAddr {
         IpAddr::V6(Ipv6Addr::from(octets))
     }
@@ -1432,6 +1551,7 @@ impl From<[u16; 8]> for IpAddr {
     ///     addr
     /// );
     /// ```
+    #[inline]
     fn from(segments: [u16; 8]) -> IpAddr {
         IpAddr::V6(Ipv6Addr::from(segments))
     }

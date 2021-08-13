@@ -2,9 +2,14 @@
 // They hold the copyright (http://rust-lang.org/COPYRIGHT) and whatever other rights, but this
 // crate is MIT licensed also, so it's all good.
 
-use core::result::Result;
-use core::{iter, option, slice};
-use {IpAddr, Ipv4Addr, Ipv6Addr};
+use core::cmp::Ordering;
+use core::fmt;
+use core::hash;
+use core::iter;
+use core::option;
+use core::slice;
+
+use super::{IpAddr, Ipv4Addr, Ipv6Addr};
 
 /// An internet socket address, either IPv4 or IPv6.
 ///
@@ -25,7 +30,7 @@ use {IpAddr, Ipv4Addr, Ipv6Addr};
 /// assert_eq!(socket.port(), 8080);
 /// assert_eq!(socket.is_ipv4(), true);
 /// ```
-#[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub enum SocketAddr {
     /// An IPv4 socket address.
     V4(SocketAddrV4),
@@ -54,7 +59,7 @@ pub enum SocketAddr {
 /// assert_eq!(socket.ip(), &Ipv4Addr::new(127, 0, 0, 1));
 /// assert_eq!(socket.port(), 8080);
 /// ```
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy)]
 pub struct SocketAddrV4 {
     addr: Ipv4Addr,
     port: u16,
@@ -82,7 +87,7 @@ pub struct SocketAddrV4 {
 /// assert_eq!(socket.ip(), &Ipv6Addr::new(0x2001, 0xdb8, 0, 0, 0, 0, 0, 1));
 /// assert_eq!(socket.port(), 8080);
 /// ```
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy)]
 pub struct SocketAddrV6 {
     addr: Ipv6Addr,
     port: u16,
@@ -478,25 +483,33 @@ impl SocketAddrV6 {
 }
 
 impl From<SocketAddrV4> for SocketAddr {
+    /// Converts a [`SocketAddrV4`] into a [`SocketAddr::V4`].
     fn from(sock4: SocketAddrV4) -> SocketAddr {
         SocketAddr::V4(sock4)
     }
 }
 
 impl From<SocketAddrV6> for SocketAddr {
+    /// Converts a [`SocketAddrV6`] into a [`SocketAddr::V6`].
     fn from(sock6: SocketAddrV6) -> SocketAddr {
         SocketAddr::V6(sock6)
     }
 }
 
 impl<I: Into<IpAddr>> From<(I, u16)> for SocketAddr {
+    /// Converts a tuple struct (Into<[`IpAddr`]>, `u16`) into a [`SocketAddr`].
+    ///
+    /// This conversion creates a [`SocketAddr::V4`] for a [`IpAddr::V4`]
+    /// and creates a [`SocketAddr::V6`] for a [`IpAddr::V6`].
+    ///
+    /// `u16` is treated as port of the newly created [`SocketAddr`].
     fn from(pieces: (I, u16)) -> SocketAddr {
         SocketAddr::new(pieces.0.into(), pieces.1)
     }
 }
 
-impl ::fmt::Display for SocketAddr {
-    fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+impl fmt::Display for SocketAddr {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
             SocketAddr::V4(ref a) => a.fmt(f),
             SocketAddr::V6(ref a) => a.fmt(f),
@@ -504,27 +517,99 @@ impl ::fmt::Display for SocketAddr {
     }
 }
 
-impl ::fmt::Display for SocketAddrV4 {
-    fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+impl fmt::Debug for SocketAddr {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt::Display::fmt(self, fmt)
+    }
+}
+
+impl fmt::Display for SocketAddrV4 {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}:{}", self.ip(), self.port())
     }
 }
 
-impl ::fmt::Debug for SocketAddrV4 {
-    fn fmt(&self, fmt: &mut ::fmt::Formatter) -> ::fmt::Result {
-        ::fmt::Display::fmt(self, fmt)
+impl fmt::Debug for SocketAddrV4 {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt::Display::fmt(self, fmt)
     }
 }
 
-impl ::fmt::Display for SocketAddrV6 {
-    fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+impl fmt::Display for SocketAddrV6 {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "[{}]:{}", self.ip(), self.port())
     }
 }
 
-impl ::fmt::Debug for SocketAddrV6 {
-    fn fmt(&self, fmt: &mut ::fmt::Formatter) -> ::fmt::Result {
-        ::fmt::Display::fmt(self, fmt)
+impl fmt::Debug for SocketAddrV6 {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt::Display::fmt(self, fmt)
+    }
+}
+
+impl Clone for SocketAddrV4 {
+    fn clone(&self) -> SocketAddrV4 {
+        *self
+    }
+}
+impl Clone for SocketAddrV6 {
+    fn clone(&self) -> SocketAddrV6 {
+        *self
+    }
+}
+
+impl PartialEq for SocketAddrV4 {
+    fn eq(&self, other: &SocketAddrV4) -> bool {
+        self.port == other.port && self.addr == other.addr
+    }
+}
+impl PartialEq for SocketAddrV6 {
+    fn eq(&self, other: &SocketAddrV6) -> bool {
+        self.port == other.port
+            && self.addr == other.addr
+            && self.flow_info == other.flow_info
+            && self.scope_id == other.scope_id
+    }
+}
+impl Eq for SocketAddrV4 {}
+impl Eq for SocketAddrV6 {}
+
+impl PartialOrd for SocketAddrV4 {
+    fn partial_cmp(&self, other: &SocketAddrV4) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl PartialOrd for SocketAddrV6 {
+    fn partial_cmp(&self, other: &SocketAddrV6) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for SocketAddrV4 {
+    fn cmp(&self, other: &SocketAddrV4) -> Ordering {
+        self.ip()
+            .cmp(other.ip())
+            .then(self.port().cmp(&other.port()))
+    }
+}
+
+impl Ord for SocketAddrV6 {
+    fn cmp(&self, other: &SocketAddrV6) -> Ordering {
+        self.ip()
+            .cmp(other.ip())
+            .then(self.port().cmp(&other.port()))
+    }
+}
+
+impl hash::Hash for SocketAddrV4 {
+    fn hash<H: hash::Hasher>(&self, s: &mut H) {
+        (self.port, self.addr).hash(s)
+    }
+}
+impl hash::Hash for SocketAddrV6 {
+    fn hash<H: hash::Hasher>(&self, s: &mut H) {
+        (self.port, self.addr, self.flow_info, self.scope_id).hash(s)
     }
 }
 

@@ -6,8 +6,10 @@
 //!
 //! This module is "publicly exported" through the `FromStr` implementations below.
 
+use core::fmt;
 use core::str::FromStr;
-use ::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr, SocketAddrV4, SocketAddrV6};
+
+use super::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr, SocketAddrV4, SocketAddrV6};
 
 struct Parser<'a> {
     // parsing as ASCII, so can use byte array
@@ -361,8 +363,8 @@ impl FromStr for SocketAddr {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AddrParseError(());
 
-impl ::fmt::Display for AddrParseError {
-    fn fmt(&self, fmt: &mut ::fmt::Formatter) -> ::fmt::Result {
+impl fmt::Display for AddrParseError {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.write_str("invalid IP address syntax")
     }
 }
