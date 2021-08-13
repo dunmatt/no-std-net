@@ -101,6 +101,7 @@ pub struct Ipv6Addr {
 
 #[allow(missing_docs)]
 #[derive(Copy, PartialEq, Eq, Clone, Hash, Debug)]
+#[cfg(feature = "unstable_ip")]
 pub enum Ipv6MulticastScope {
     InterfaceLocal,
     LinkLocal,
@@ -160,6 +161,8 @@ impl IpAddr {
     /// # Examples
     ///
     /// ```
+    /// // Requires `unstable_ip` feature
+    ///
     /// use no_std_net::{IpAddr, Ipv4Addr, Ipv6Addr};
     ///
     /// fn main() {
@@ -168,6 +171,7 @@ impl IpAddr {
     ///                true);
     /// }
     /// ```
+    #[cfg(feature = "unstable_ip")]
     pub const fn is_global(&self) -> bool {
         match *self {
             IpAddr::V4(ref a) => a.is_global(),
@@ -203,6 +207,8 @@ impl IpAddr {
     /// # Examples
     ///
     /// ```
+    /// // Requires `unstable_ip` feature
+    ///
     /// use no_std_net::{IpAddr, Ipv4Addr, Ipv6Addr};
     ///
     /// fn main() {
@@ -211,6 +217,7 @@ impl IpAddr {
     ///                       .is_documentation(), true);
     /// }
     /// ```
+    #[cfg(feature = "unstable_ip")]
     pub const fn is_documentation(&self) -> bool {
         match *self {
             IpAddr::V4(ref a) => a.is_documentation(),
@@ -430,6 +437,8 @@ impl Ipv4Addr {
     /// # Examples
     ///
     /// ```
+    /// // Requires `unstable_ip` feature
+    ///
     /// use no_std_net::Ipv4Addr;
     ///
     /// fn main() {
@@ -440,6 +449,7 @@ impl Ipv4Addr {
     ///     assert_eq!(Ipv4Addr::new(80, 9, 12, 3).is_global(), true);
     /// }
     /// ```
+    #[cfg(feature = "unstable_ip")]
     pub const fn is_global(&self) -> bool {
         !self.is_private()
             && !self.is_loopback()
@@ -893,6 +903,8 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
+    /// // Requires `unstable_ip` feature
+    ///
     /// use no_std_net::Ipv6Addr;
     ///
     /// fn main() {
@@ -901,6 +913,7 @@ impl Ipv6Addr {
     ///     assert_eq!(Ipv6Addr::new(0, 0, 0x1c9, 0, 0, 0xafc8, 0, 0x1).is_global(), true);
     /// }
     /// ```
+    #[cfg(feature = "unstable_ip")]
     pub const fn is_global(&self) -> bool {
         match self.multicast_scope() {
             Some(Ipv6MulticastScope::Global) => true,
@@ -918,6 +931,8 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
+    /// // Requires `unstable_ip` feature
+    ///
     /// use no_std_net::Ipv6Addr;
     ///
     /// fn main() {
@@ -926,6 +941,7 @@ impl Ipv6Addr {
     ///     assert_eq!(Ipv6Addr::new(0xfc02, 0, 0, 0, 0, 0, 0, 0).is_unique_local(), true);
     /// }
     /// ```
+    #[cfg(feature = "unstable_ip")]
     pub const fn is_unique_local(&self) -> bool {
         self.inner[0] & 0xfe == 0xfc
     }
@@ -939,6 +955,8 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
+    /// // Requires `unstable_ip` feature
+    ///
     /// use no_std_net::Ipv6Addr;
     ///
     /// fn main() {
@@ -947,6 +965,7 @@ impl Ipv6Addr {
     ///     assert_eq!(Ipv6Addr::new(0xfe8a, 0, 0, 0, 0, 0, 0, 0).is_unicast_link_local(), true);
     /// }
     /// ```
+    #[cfg(feature = "unstable_ip")]
     pub const fn is_unicast_link_local(&self) -> bool {
         self.first_segment() & 0xffc0 == 0xfe80
     }
@@ -957,6 +976,8 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
+    /// // Requires `unstable_ip` feature
+    ///
     /// use no_std_net::Ipv6Addr;
     ///
     /// fn main() {
@@ -965,6 +986,7 @@ impl Ipv6Addr {
     ///     assert_eq!(Ipv6Addr::new(0xfec2, 0, 0, 0, 0, 0, 0, 0).is_unicast_site_local(), true);
     /// }
     /// ```
+    #[cfg(feature = "unstable_ip")]
     pub const fn is_unicast_site_local(&self) -> bool {
         self.first_segment() & 0xffc0 == 0xfec0
     }
@@ -979,6 +1001,8 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
+    /// // Requires `unstable_ip` feature
+    ///
     /// use no_std_net::Ipv6Addr;
     ///
     /// fn main() {
@@ -987,6 +1011,7 @@ impl Ipv6Addr {
     ///     assert_eq!(Ipv6Addr::new(0x2001, 0xdb8, 0, 0, 0, 0, 0, 0).is_documentation(), true);
     /// }
     /// ```
+    #[cfg(feature = "unstable_ip")]
     pub const fn is_documentation(&self) -> bool {
         self.first_segment() == 0x2001 && self.second_segment() == 0xdb8
     }
@@ -1005,6 +1030,8 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
+    /// // Requires `unstable_ip` feature
+    ///
     /// use no_std_net::Ipv6Addr;
     ///
     /// fn main() {
@@ -1013,6 +1040,7 @@ impl Ipv6Addr {
     ///                true);
     /// }
     /// ```
+    #[cfg(feature = "unstable_ip")]
     pub const fn is_unicast_global(&self) -> bool {
         !self.is_multicast()
             && !self.is_loopback()
@@ -1028,6 +1056,8 @@ impl Ipv6Addr {
     /// # Examples
     ///
     /// ```
+    /// // Requires `unstable_ip` feature
+    ///
     /// use no_std_net::{Ipv6Addr, Ipv6MulticastScope};
     ///
     /// fn main() {
@@ -1036,6 +1066,7 @@ impl Ipv6Addr {
     ///     assert_eq!(Ipv6Addr::new(0, 0, 0, 0, 0, 0xffff, 0xc00a, 0x2ff).multicast_scope(), None);
     /// }
     /// ```
+    #[cfg(feature = "unstable_ip")]
     pub const fn multicast_scope(&self) -> Option<Ipv6MulticastScope> {
         if self.is_multicast() {
             match self.inner[1] & 0x0F {
