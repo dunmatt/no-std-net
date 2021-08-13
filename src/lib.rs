@@ -49,6 +49,7 @@
     warnings
 )]
 #![forbid(unsafe_code)]
+#![cfg_attr(all(feature = "std", feature = "unstable_ip"), feature(ip))]
 
 #[cfg(not(feature = "std"))]
 use core::fmt;
@@ -69,13 +70,16 @@ mod ser;
 
 #[cfg(not(feature = "std"))]
 pub use addr::{SocketAddr, SocketAddrV4, SocketAddrV6, ToSocketAddrs};
+#[cfg(all(not(feature = "std"), feature = "unstable_ip"))]
+pub use ip::Ipv6MulticastScope;
 #[cfg(not(feature = "std"))]
-pub use ip::{IpAddr, Ipv4Addr, Ipv6Addr, Ipv6MulticastScope};
+pub use ip::{IpAddr, Ipv4Addr, Ipv6Addr};
 
 // Re-export std::net types when std is available
 #[cfg(feature = "std")]
 extern crate std;
-// pub use std::net::Ipv6MulticastScope;
+#[cfg(all(feature = "std", feature = "unstable_ip"))]
+pub use std::net::Ipv6MulticastScope;
 #[cfg(feature = "std")]
 pub use std::net::{
     IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr, SocketAddrV4, SocketAddrV6, ToSocketAddrs,

@@ -10,3 +10,4 @@ script:
 - cargo test --verbose
 - cargo build --features serde
 - cargo test --features std
+- cargo test --features unstable_ip

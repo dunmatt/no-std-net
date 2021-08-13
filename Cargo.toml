@@ -25,5 +25,7 @@ serde_test = "^1"
 [features]
 # Makes the library act as a facade to std::net types
 std = []
+# Like `#![feature(ip)]`, see https://github.com/rust-lang/rust/issues/27709
+unstable_ip = []
 # Deprecated. Does nothing.
 i128 = []
