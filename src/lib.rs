@@ -40,33 +40,43 @@
 )]
 #![no_std]
 #![deny(
-	dead_code,
-	missing_docs,
-	unused_imports,
-	unused_must_use,
-	unused_parens,
-	unused_qualifications,
-	warnings,
+    dead_code,
+    missing_docs,
+    unused_imports,
+    unused_must_use,
+    unused_parens,
+    unused_qualifications,
+    warnings
 )]
 #![forbid(unsafe_code)]
 
-#[cfg(feature = "std")]
-extern crate std;
-
+#[cfg(not(feature = "std"))]
 use core::fmt;
 
+#[cfg(not(feature = "std"))]
 mod addr;
+#[cfg(not(feature = "std"))]
 mod ip;
+#[cfg(not(feature = "std"))]
 mod parser;
 
-#[cfg(feature = "serde")]
+#[cfg(all(not(feature = "std"), feature = "serde"))]
 extern crate serde;
-#[cfg(feature = "serde")]
+#[cfg(all(not(feature = "std"), feature = "serde"))]
 mod de;
-#[cfg(feature = "serde")]
+#[cfg(all(not(feature = "std"), feature = "serde"))]
 mod ser;
 
+#[cfg(not(feature = "std"))]
+pub use addr::{SocketAddr, SocketAddrV4, SocketAddrV6, ToSocketAddrs};
+#[cfg(not(feature = "std"))]
+pub use ip::{IpAddr, Ipv4Addr, Ipv6Addr, Ipv6MulticastScope};
 
-pub use addr::{ SocketAddr, SocketAddrV4, SocketAddrV6, ToSocketAddrs };
-pub use ip::{ IpAddr, Ipv4Addr, Ipv6Addr, Ipv6MulticastScope };
-pub use parser::{ AddrParseError };
+// Re-export std::net types when std is available
+#[cfg(feature = "std")]
+extern crate std;
+// pub use std::net::Ipv6MulticastScope;
+#[cfg(feature = "std")]
+pub use std::net::{
+    IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr, SocketAddrV4, SocketAddrV6, ToSocketAddrs,
+};

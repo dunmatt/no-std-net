@@ -23,6 +23,7 @@ serde = { version = "^1", default-features = false, optional = true }
 serde_test = "^1"
 
 [features]
+# Makes the library act as a facade to std::net types
 std = []
 # Deprecated. Does nothing.
 i128 = []
