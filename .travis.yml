@@ -9,4 +9,4 @@ cache: cargo
 script:
 - cargo test --verbose
 - cargo build --features serde
-- cargo build --features std
+- cargo test --features std
