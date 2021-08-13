@@ -7,6 +7,9 @@
 //! This module is "publicly exported" through the `FromStr` implementations
 //! below.
 
+#[cfg(test)]
+mod tests;
+
 use core::convert::TryInto;
 use core::fmt;
 use core::str::FromStr;

@@ -58,6 +58,12 @@ mod helper;
 mod ip;
 #[cfg(not(feature = "std"))]
 mod parser;
+#[cfg(all(not(feature = "std"), test))]
+mod test;
+
+#[cfg(all(not(feature = "std"), test))]
+#[macro_use]
+extern crate alloc;
 
 #[cfg(all(not(feature = "std"), feature = "serde"))]
 extern crate serde;
