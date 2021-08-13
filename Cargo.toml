@@ -18,7 +18,6 @@ serde = { version = "^1", default-features = false, optional = true }
 serde_test = "^1"
 
 [features]
-default = [ ]
-
+std = []
 # Deprecated. Does nothing.
 i128 = [ ]

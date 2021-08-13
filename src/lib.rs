@@ -23,19 +23,21 @@
 //!   with networking objects like [`TcpListener`], [`TcpStream`] or [`UdpSocket`]
 //! * Other types are return or parameter types for various methods in this module
 //!
-//! [`IpAddr`]: ../../no-std-net/enum.IpAddr.html
-//! [`Ipv4Addr`]: ../../no-std-net/struct.Ipv4Addr.html
-//! [`Ipv6Addr`]: ../../no-std-net/struct.Ipv6Addr.html
-//! [`SocketAddr`]: ../../std/net/enum.SocketAddr.html
-//! [`SocketAddrV4`]: ../../std/net/struct.SocketAddrV4.html
-//! [`SocketAddrV6`]: ../../std/net/struct.SocketAddrV6.html
-//! [`TcpListener`]: ../../std/net/struct.TcpListener.html
-//! [`TcpStream`]: ../../std/net/struct.TcpStream.html
-//! [`ToSocketAddrs`]: ../../std/net/trait.ToSocketAddrs.html
-//! [`UdpSocket`]: ../../std/net/struct.UdpSocket.html
-
-// TODO: figure out how to put links into rustdocs and update the above
-
+#![cfg_attr(feature = "std", doc = "[`TcpListener`]: std::net::TcpListener")]
+#![cfg_attr(feature = "std", doc = "[`TcpStream`]: std::net::TcpStream")]
+#![cfg_attr(feature = "std", doc = "[`UdpSocket`]: std::net::UdpSocket")]
+#![cfg_attr(
+    not(feature = "std"),
+    doc = "[`TcpListener`]: https://doc.rust-lang.org/std/net/struct.TcpListener.html"
+)]
+#![cfg_attr(
+    not(feature = "std"),
+    doc = "[`TcpStream`]: https://doc.rust-lang.org/std/net/struct.TcpStream.html"
+)]
+#![cfg_attr(
+    not(feature = "std"),
+    doc = "[`UdpSocket`]: https://doc.rust-lang.org/std/net/struct.UdpSocket.html"
+)]
 #![no_std]
 #![deny(
 	dead_code,
@@ -47,6 +49,9 @@
 	warnings,
 )]
 #![forbid(unsafe_code)]
+
+#[cfg(feature = "std")]
+extern crate std;
 
 use core::fmt;
 
