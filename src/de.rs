@@ -1,6 +1,6 @@
-use addr::{SocketAddr, SocketAddrV4, SocketAddrV6};
+use crate::addr::{SocketAddr, SocketAddrV4, SocketAddrV6};
+use crate::ip::{IpAddr, Ipv4Addr, Ipv6Addr};
 use core::{fmt, str};
-use ip::{IpAddr, Ipv4Addr, Ipv6Addr};
 use serde::de::{Deserialize, Deserializer, EnumAccess, Error, Unexpected, VariantAccess, Visitor};
 
 macro_rules! variant_identifier {

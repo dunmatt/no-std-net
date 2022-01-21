@@ -1,7 +1,7 @@
 use serde::ser::{Error, Serialize, Serializer};
 
-use addr::{SocketAddr, SocketAddrV4, SocketAddrV6};
-use ip::{IpAddr, Ipv4Addr, Ipv6Addr};
+use crate::addr::{SocketAddr, SocketAddrV4, SocketAddrV6};
+use crate::ip::{IpAddr, Ipv4Addr, Ipv6Addr};
 
 use core::fmt::{self, write, Write};
 
