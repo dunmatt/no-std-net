@@ -19,13 +19,18 @@ travis-ci = { repository = "dunmatt/no-std-net" }
 
 [dependencies]
 serde = { version = "^1", default-features = false, optional = true }
+defmt = { version = "0.3", default-features = false, optional = true}
 
 [dev-dependencies]
 serde_test = "^1"
 
 [features]
+default = ["defmt"]
+
 # Makes the library act as a facade to std::net types
 std = []
+# defmt impls
+defmt = ["dep:defmt"]
 # Like `#![feature(ip)]`, see https://github.com/rust-lang/rust/issues/27709
 unstable_ip = []
 # Deprecated. Does nothing.
