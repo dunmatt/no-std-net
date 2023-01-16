@@ -35,6 +35,7 @@ use super::{IpAddr, Ipv4Addr, Ipv6Addr};
 /// assert_eq!(socket.is_ipv4(), true);
 /// ```
 #[derive(Copy, Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum SocketAddr {
     /// An IPv4 socket address.
     V4(SocketAddrV4),
@@ -64,6 +65,7 @@ pub enum SocketAddr {
 /// assert_eq!(socket.port(), 8080);
 /// ```
 #[derive(Copy)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub struct SocketAddrV4 {
     addr: Ipv4Addr,
     port: u16,
@@ -92,6 +94,7 @@ pub struct SocketAddrV4 {
 /// assert_eq!(socket.port(), 8080);
 /// ```
 #[derive(Copy)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub struct SocketAddrV6 {
     addr: Ipv6Addr,
     port: u16,

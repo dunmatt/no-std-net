@@ -67,6 +67,7 @@ pub enum IpAddr {
 /// assert_eq!(localhost.is_loopback(), true);
 /// ```
 #[derive(Copy)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub struct Ipv4Addr {
     // Octets stored in transmit order.
     inner: [u8; 4],
@@ -101,6 +102,7 @@ pub struct Ipv4Addr {
 /// assert_eq!(localhost.is_loopback(), true);
 /// ```
 #[derive(Copy)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub struct Ipv6Addr {
     // Octets stored in transmit order.
     inner: [u8; 16],
